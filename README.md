@@ -1,10 +1,6 @@
-Certainly! Here's the updated README content with expanded details for the nested types such as `ComponentStyle`, `DropdownStyle`, `Placeholder`, and `Border`.
+# universal-react-dropdown
 
----
-
-# PLACEHOLDER_NAME
-
-PLACEHOLDER_NAME is a customizable React Dropdown component designed for flexible integration into React applications. This component allows for easy customization of styles and behavior, making it suitable for various use cases.
+universal-react-dropdown is a customizable React Dropdown component designed for flexible integration into React applications. This component allows for easy customization of styles and behavior, making it suitable for various use cases.
 
 ## Installation
 
@@ -147,7 +143,3 @@ The Dropdown component accepts the following props:
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-You can use this text in your README file, adding any additional details or modifications you need. Let me know if there's anything else you'd like to add!
