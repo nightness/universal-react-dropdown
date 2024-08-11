@@ -16,7 +16,7 @@ Here is a basic example of how to use the Dropdown component:
 
 ```jsx
 import React from 'react';
-import { Dropdown } from 'PLACEHOLDER_NAME';
+import { Dropdown } from 'universal-react-dropdown';
 
 const items = ['Item 1', 'Item 2', 'Item 3'];
 
