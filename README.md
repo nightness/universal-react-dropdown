@@ -7,7 +7,7 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 You can install the package via npm:
 
 ```bash
-npm install PLACEHOLDER_NAME
+npm install universal-react-dropdown
 ```
 
 ## Usage
