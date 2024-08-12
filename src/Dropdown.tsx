@@ -85,6 +85,9 @@ export function Dropdown<T>({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
 
+  // const [dropdownDirection, setDropdownDirection] = useState<'up' | 'down'>('down');
+
+
   // Start the closing dropdown animation. The callback is used when the animation is done
   // to delay updating the parent component until the animation is done.
   function closeDropdown(callback: () => void = () => { }) {
@@ -253,7 +256,7 @@ export function Dropdown<T>({
         }s ease;
         }
         .dropdown-arrow.open {
-          transform: rotate(180deg);
+          transform: rotate(180deg); // -180deg would be counter-clockwise rotation
         }
         .dropdown-list {
           position: absolute;
