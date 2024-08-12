@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback, WheelEventHandler } from 'react';
 
 const TRANSITION_DURATION = 300;
 
-enum DropdownState {
-  Opening,
-  Open,
-  Closing,
-  Closed,
+export enum DropdownVisibility {
+  Opening,  // Animating open
+  Open,     // Fully open
+  Closing,  // Animating close
+  Closed,   // Fully closed
 }
 
 export interface Border {
@@ -42,16 +42,18 @@ export interface ComponentStyle extends CommonStyle {
 export interface DropdownStyle extends CommonStyle {
   hoverColor?: string;
   separatorColor?: string;
+  selectedColor?: string;
+  selectedBackgroundColor?: string;
 }
 
 interface DropdownProps<T> {
   items: T[];
-  ArrowComponent?: React.FC<{ color: string, borderColor?: string }>;
-  renderItem: (item: T | null) => React.ReactNode;
+  ArrowComponent?: React.FC<{ color: string, borderColor?: string, visibility: DropdownVisibility }>;
+  renderItem: (item: T | null, index: number, isSelected: boolean) => React.ReactNode;
   width?: number | string;
   maxDropHeight?: number;
   padding?: number;
-  onSelect?: (item: T | null) => void;
+  onSelect?: (item: T | null, index: number) => void;
   border?: Border | string;
   placeholder?: Placeholder;
   componentStyle?: ComponentStyle;
@@ -75,29 +77,36 @@ export function Dropdown<T>({
   disabled = false,
   allowNoSelection = false,
 }: DropdownProps<T>) {
-  const [visibility, setVisibility] = useState<DropdownState>(DropdownState.Closed);
+  const [visibility, setVisibility] = useState<DropdownVisibility>(DropdownVisibility.Closed);
+  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
 
-  function closeDropdown() {
-    setVisibility(DropdownState.Closing);
+  // Start the closing dropdown animation. The callback is used when the animation is done
+  // to delay updating the parent component until the animation is done.
+  function closeDropdown(callback: () => void = () => { }) {
+    setVisibility(DropdownVisibility.Closing);
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
-    animationTimeout.current = setTimeout(() => setVisibility(DropdownState.Closed), TRANSITION_DURATION); // Match this with the transition duration
+    animationTimeout.current = setTimeout(() => {
+      setVisibility(DropdownVisibility.Closed)
+      callback();
+    }, TRANSITION_DURATION); // Match this with the transition duration
+
   }
 
+  // Start the opening dropdown animation
   function openDropdown() {
-    setVisibility(DropdownState.Opening);
+    setVisibility(DropdownVisibility.Opening);
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
-    animationTimeout.current = setTimeout(() => setVisibility(DropdownState.Open), TRANSITION_DURATION); // Match this with the transition duration
+    animationTimeout.current = setTimeout(() => setVisibility(DropdownVisibility.Open), TRANSITION_DURATION); // Match this with the transition duration
   }
 
+  // Close the dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const isOpen = visibility === DropdownState.Open || visibility === DropdownState.Opening;
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && isOpen) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node | null))
         closeDropdown();
-      }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
@@ -106,29 +115,53 @@ export function Dropdown<T>({
     };
   }, []);
 
+  // Adjusting the selected index by +/- 1. Updates the selected item as well.
+  function wheelAdjustment(increase: boolean) {
+    setSelectedIndex((prev) => {
+      if (increase) {
+        return prev === items.length - 1 ? prev : prev + 1;
+      } else {
+        return prev <= 0 ? allowNoSelection ? -1 : 0 : prev - 1;
+      }
+    });
+    setSelectedItem((prev) => {
+      if (prev === null) return increase ? items[0] : null;
+      if (increase) {
+        const nextIndex = items.indexOf(prev) + 1;
+        return nextIndex === items.length ? prev : items[nextIndex];
+      } else {
+        const nextIndex = items.indexOf(prev) - 1;
+        return nextIndex === -1 ? allowNoSelection ? null : prev : items[nextIndex];
+      }
+    });
+  }
+
+  // Handles the wheel event, adjusting the selected index by +/- 1
+  const onWheel = (event: React.WheelEvent) => {
+    const increase = event.deltaY > 0;
+    wheelAdjustment(increase);
+  };
+
+  // Toggles the dropdown visibility
   const toggleDropdown = () => {
-    if (visibility === DropdownState.Open || visibility === DropdownState.Opening) {
+    if (visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening) {
       closeDropdown();
     } else {
       openDropdown();
     }
   };
 
-  const handleItemClick = (item: T | null) => {
-    onSelect?.(item);
+  // Handles the selection of an item
+  const handleItemClick = (item: T | null, index: number) => {
+    setSelectedIndex(index);
     setSelectedItem(item);
-    toggleDropdown();
+    closeDropdown(() => {
+      onSelect?.(item, index);
+    });
   };
 
-  // Create borderStyle... if border is a string, conver it to the object properties of Border
-  const borderObject: Border = typeof border === 'string' ? {
-    // Parse the border string to get the width, style, and color
-    color: border.split(' ').pop() || 'transparent',
-    width: parseInt(border.split(' ')[0]) || 0,
-    style: border.split(' ')[1] || 'none',
-    radius: "1px",
-  } : border;
-
+  // Create borderStyle... if border is a string, convert it to the object properties of Border
+  const borderObject = toBorder(border);
   const borderStyle = `${borderObject.width}px ${borderObject.style} ${borderObject.color}`;
 
   return (
@@ -140,29 +173,44 @@ export function Dropdown<T>({
           style={componentStyle ? {
             ...componentStyle, border: borderObject.color
           } : undefined}
+          onWheel={onWheel}
         >
           <span
+            onWheel={onWheel}
             style={{
               color: selectedItem ? componentStyle?.color : placeholder?.color || 'black',
               fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
               fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 400,
               fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'undefined',
             }}
-          >{selectedItem ? renderItem(selectedItem) : placeholder?.text}</span>
-          <ArrowComponent color={componentStyle?.arrowColor || 'black'} borderColor={
-            componentStyle?.arrowBorderColor || 'black'
-          } />
+          >{selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}</span>
+          <ArrowComponent
+            color={componentStyle?.arrowColor || 'black'}
+            borderColor={componentStyle?.arrowBorderColor || 'black'}
+            visibility={visibility}
+          />
         </div>
-        <ul className={`dropdown-list ${visibility === DropdownState.Open || visibility === DropdownState.Opening ? 'dropdown-open' : 'dropdown-closed'
+        <ul className={`dropdown-list ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'dropdown-open' : 'dropdown-closed'
           }`}>
           {allowNoSelection && (
-            <li onClick={() => handleItemClick(null)}>
-              {renderItem(null)}
+            <li onClick={() => handleItemClick(null, -1)}
+
+              style={{
+                backgroundColor: selectedItem === null ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
+              }}
+
+            >
+              {renderItem(null, -1, false)}
             </li>
           )}
           {items.map((item, index) => (
-            <li key={index} onClick={() => !disabled && handleItemClick(item)}>
-              {renderItem(item)}
+            <li key={index} onClick={() => !disabled && handleItemClick(item, index)}
+              style={{
+                color: selectedItem === item ? dropdownStyle?.selectedColor : dropdownStyle?.color,
+                backgroundColor: selectedItem === item ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
+              }}
+            >
+              {renderItem(item, index, selectedIndex === index)}
             </li>
           ))}
         </ul>
@@ -170,7 +218,7 @@ export function Dropdown<T>({
       <style>{`
         .dropdown {
           position: relative;
-          width: ${width};
+          width: ${typeof width === "number" ? `${width}px`: width};
           font-family: ${componentStyle?.fontFamily};
           font-size: ${componentStyle?.fontSize}px;
           font-weight: ${componentStyle?.fontWeight};
@@ -186,6 +234,7 @@ export function Dropdown<T>({
           background-color: ${componentStyle?.backgroundColor};
           cursor: pointer;
           padding: ${padding}px;
+          color: ${componentStyle?.color || 'black'};
         }
         .dropdown-arrow {
           margin-left: 10px;
@@ -218,7 +267,8 @@ export function Dropdown<T>({
           opacity: 0;
         }
         .dropdown-list li {
-          padding: 10px;
+          color: ${dropdownStyle?.color || 'black'};
+          padding: ${padding}px;
           cursor: pointer;
           ${dropdownStyle?.separatorColor ? `border-bottom: 1px solid ${dropdownStyle?.separatorColor};` : ""}
         }      
@@ -230,12 +280,31 @@ export function Dropdown<T>({
   );
 }
 
-function DefaultArrow({ color, borderColor }: { color: string, borderColor?: string }) {
+function DefaultArrow({ visibility, color, borderColor }: {
+  visibility: DropdownVisibility,
+  color: string,
+  borderColor?: string
+}) {
   return (
     <svg
+      className={`dropdown-arrow ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
+          ? 'open' : ''}`}
       width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="45" stroke={borderColor ? borderColor : color} strokeWidth="1" fill="none" />
       <text x="50" y="60" fontSize="60" textAnchor="middle" alignmentBaseline="middle" fill={color}>▼</text>
     </svg>
   );
+}
+
+function toBorder(border: Border | string): Border {
+  if (typeof border === 'string') {
+    const [width, style, color] = border.split(' ');
+    return {
+      width: parseInt(width) || 0,
+      style: style || 'none',
+      color: color || 'transparent',
+      radius: "1px",
+    };
+  }
+  return border;
 }
