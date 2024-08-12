@@ -73,11 +73,7 @@ The Dropdown component accepts the following props:
 - **Default**: `DefaultArrow` component provided by the package.
 - **Example**:
 ```tsx
-function ArrowComponent({ visibility, color, borderColor }: {
-  visibility: DropdownVisibility;
-  color: string;
-  borderColor?: string;
-}) {
+function ArrowComponent({ visibility, color, borderColor, animationDuration }: ArrowComponentProps) {
   return (
     <>
       <svg
@@ -92,7 +88,9 @@ function ArrowComponent({ visibility, color, borderColor }: {
           // Counter-clockwise rotation
           // transform: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'rotate(45deg)' : 'rotate(225deg)',
 
-          transition: `transform 0.3s ease`,
+          transition: `transform ${
+            animationDuration / 1000
+          }s ease`,
         }}
       >
         <rect x='25%' y='25%' width='25%' height='25%' fill='tomato' opacity='0.75' />
