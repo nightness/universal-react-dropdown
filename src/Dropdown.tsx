@@ -94,9 +94,24 @@ export function Dropdown<T>({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
 
+  // Determine the selected item index is visible inside the dropdown list
   const ensureVisible = useCallback(() => {
-    if (selectedIndex >= 0 && itemRefs.current[selectedIndex]) {
-      itemRefs.current[selectedIndex]?.scrollIntoView({
+    // Selected ref
+    const selectedRef = itemRefs.current[selectedIndex];
+
+    // Is the selected item visible?
+    if (!selectedRef) return;
+    const isVisible = selectedRef?.getBoundingClientRect().top >= 0 && selectedRef?.getBoundingClientRect().bottom <= window.innerHeight;
+    
+    // Scroll the selected item into view if needed
+    if (!isVisible && selectedIndex > 0) {
+      const previousRef = itemRefs.current[selectedIndex - 1];
+      previousRef?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+      });
+    } else if (!isVisible && selectedIndex === 0) {
+      itemRefs.current[0]?.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
       });
