@@ -49,45 +49,45 @@ The Dropdown component accepts the following props:
 - **Description**: An array of items to display in the dropdown.
 
 ### `ArrowComponent`
-- **Type**: `React.FC<{ color: string, borderColor?: string }>`
+- **Type**: `React.FC<{ color: string, borderColor?: string, visibility: DropdownVisibility }>`
 - **Description**: A custom component to render the dropdown arrow. It receives `color` and `borderColor` as props.
 - **Default**: `DefaultArrow` component provided by the package.
 - **Example**:
 ```jsx
-          ArrowComponent={({ visibility, color, borderColor }: {
-            visibility: DropdownVisibility,
-            color: string,
-            borderColor?: string
-          }) => (
-            <>
-              <svg
-                className="spin-left"
-                viewBox='0 0 30 30'
-                xmlns='http://www.w3.org/2000/svg'
-                height='30' width='30'
-              >
-                <rect x='25%' y='25%' width='25%' height='25%' fill='tomato' opacity='0.75' />
-                <rect x='25%' y='50%' width='25%' height='25%' fill='slategrey' opacity='0.75' />
-                <rect x='50%' y='25%' width='25%' height='25%' fill='olive' opacity='0.75' />
-              </svg>
-              <style>
-                {`
-                  .spin-right {                
-                    transform: ${
-                      visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
-                        ? 'rotate(45deg)' : 'rotate(225deg)'};
-                    transition: transform 0.3s ease;
-                  }
-                  .spin-left {                
-                    transform: ${
-                      visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
-                      ? 'rotate(45deg)' : 'rotate(-135deg)'};
-                    transition: transform 0.3s ease;
-                  }
-              `}
-              </style>
-            </>
-          )}
+function ArrowComponent({ visibility, color, borderColor }: {
+  visibility: DropdownVisibility;
+  color: string;
+  borderColor?: string;
+}) {
+  return (
+    <>
+      <svg
+        className="spin-left"
+        viewBox='0 0 30 30'
+        xmlns='http://www.w3.org/2000/svg'
+        height='30' width='30'
+      >
+        <rect x='25%' y='25%' width='25%' height='25%' fill='tomato' opacity='0.75' />
+        <rect x='25%' y='50%' width='25%' height='25%' fill='slategrey' opacity='0.75' />
+        <rect x='50%' y='25%' width='25%' height='25%' fill='olive' opacity='0.75' />
+      </svg>
+      <style>
+        {`
+        .spin-right {                
+          transform: ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
+            ? 'rotate(45deg)' : 'rotate(225deg)'};
+          transition: transform 0.3s ease;
+        }
+        .spin-left {                
+          transform: ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
+            ? 'rotate(45deg)' : 'rotate(-135deg)'};
+          transition: transform 0.3s ease;
+        }
+      `}
+      </style>
+    </>
+  );
+}
 ```
 
 ### `renderItem` (required)
@@ -110,7 +110,7 @@ The Dropdown component accepts the following props:
 
 ### `onSelect`
 - **Type**: `(item: T | null) => void`
-- **Description**: Callback function invoked when an item is selected.
+- **Description**: Callback that informs the parent after an item is selected. Animations finish before this is called.
 
 ### `border`
 - **Type**: `Border | string`
