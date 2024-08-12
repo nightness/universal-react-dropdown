@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback, WheelEventHandler } from 'react';
 
-const TRANSITION_DURATION = 300;
+const DEFAULT_TRANSITION_DURATION = 300;
 
 export enum DropdownVisibility {
   Opening,  // Animating open
@@ -40,6 +40,7 @@ export interface ComponentStyle extends CommonStyle {
 }
 
 export interface DropdownStyle extends CommonStyle {
+  animationDuration?: number;
   dropdownDirection?: 'up' | 'down';
   hoverColor?: string;
   maxDropHeight?: number;
@@ -85,6 +86,8 @@ export function Dropdown<T>({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
 
+  const animationDuration = dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION;
+
   // Start the closing dropdown animation. The callback is used when the animation is done
   // to delay updating the parent component until the animation is done.
   function closeDropdown(callback: () => void = () => { }) {
@@ -93,7 +96,7 @@ export function Dropdown<T>({
     animationTimeout.current = setTimeout(() => {
       setVisibility(DropdownVisibility.Closed)
       callback();
-    }, TRANSITION_DURATION); // Match this with the transition duration
+    }, animationDuration);
 
   }
 
@@ -101,7 +104,7 @@ export function Dropdown<T>({
   function openDropdown() {
     setVisibility(DropdownVisibility.Opening);
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
-    animationTimeout.current = setTimeout(() => setVisibility(DropdownVisibility.Open), TRANSITION_DURATION); // Match this with the transition duration
+    animationTimeout.current = setTimeout(() => setVisibility(DropdownVisibility.Open), animationDuration);
   }
 
   // Close the dropdown when clicking outside of it
@@ -169,6 +172,9 @@ export function Dropdown<T>({
   let maxDropHeight = '60vh';
   if (dropdownStyle?.maxDropHeight) maxDropHeight = `${dropdownStyle?.maxDropHeight}px`;
 
+  // Transition
+  const transition = `max-height ${animationDuration / 1000}s ease, opacity ${(dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION) / 1000}s ease`;
+
   return (
     <>
       <div className="dropdown" ref={dropdownRef}>
@@ -196,11 +202,11 @@ export function Dropdown<T>({
           />
         </div>
         <ul
-          className={`dropdown-list`}
+          className={`dropdown-list ${dropdownStyle?.dropdownDirection === 'up' ? 'up' : 'down'}`}
           style={{
-            top: dropdownStyle?.dropdownDirection === 'down' ? '100%' : 'auto',
-            bottom: dropdownStyle?.dropdownDirection === 'up' ? '100%' : 'auto',
             maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
+            opacity: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 1 : 0,
+            transition: `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`,
           }}
         >
           {allowNoSelection && (
@@ -249,7 +255,7 @@ export function Dropdown<T>({
         }
         .dropdown-arrow {
           margin-left: 10px;
-          transition: transform ${TRANSITION_DURATION / 1000
+          transition: transform ${animationDuration / 1000
         }s ease;
         }
         .dropdown-arrow.open {
@@ -257,7 +263,6 @@ export function Dropdown<T>({
         }
         .dropdown-list {
           position: absolute;
-          top: 100%;
           left: 0%;
           right: 0;
           margin: 0;
@@ -267,8 +272,16 @@ export function Dropdown<T>({
           background-color: ${dropdownStyle?.backgroundColor};
           overflow-y: scroll;
           z-index: 1000;
-          transition: max-height 0.3s ease, opacity 0.3s ease;
+          transition: ${transition};
         }
+        .dropdown-list.up {
+          top: auto;
+          bottom: 100%;
+        }
+        .dropdown-list.down {
+          top: 100%;
+          bottom: auto;
+        }          
         .dropdown-list li {
           color: ${dropdownStyle?.color || 'black'};
           padding: ${padding}px;
