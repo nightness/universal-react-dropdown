@@ -277,7 +277,7 @@ export function Dropdown<T>({
           } ${dropdownStyle?.separatorColor};` : ""}
         }      
         .dropdown-list li:hover {
-          background-color: ${dropdownStyle?.hoverColor || 'transparent'};
+          background-color: ${dropdownStyle?.hoverColor || 'transparent'} !important;
         }
       `}</style>
     </>
