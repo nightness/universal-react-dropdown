@@ -51,9 +51,16 @@ export interface DropdownStyle extends CommonStyle {
   separatorStyle?: 'solid' | 'dotted' | 'dashed';
 }
 
+export interface ArrowComponentProps {
+  color: string;
+  borderColor?: string;
+  visibility: DropdownVisibility;
+  animationDuration: number;
+}
+
 interface DropdownProps<T> {
   items: T[];
-  ArrowComponent?: React.FC<{ color: string, borderColor?: string, visibility: DropdownVisibility }>;
+  ArrowComponent?: React.FC<ArrowComponentProps>;
   renderItem: (item: T | null, index: number, isSelected: boolean) => React.ReactNode;
   width?: number | string;
   padding?: number;
@@ -199,6 +206,7 @@ export function Dropdown<T>({
             color={componentStyle?.arrowColor || 'black'}
             borderColor={componentStyle?.arrowBorderColor || 'black'}
             visibility={visibility}
+            animationDuration={animationDuration}
           />
         </div>
         <ul
@@ -254,9 +262,7 @@ export function Dropdown<T>({
           color: ${componentStyle?.color || 'black'};
         }
         .dropdown-arrow {
-          margin-left: 10px;
-          transition: transform ${animationDuration / 1000
-        }s ease;
+          margin-left: ${padding}px;
         }
         .dropdown-arrow.open {
           transform: rotate(180deg); // -180deg would be counter-clockwise rotation
@@ -298,15 +304,14 @@ export function Dropdown<T>({
   );
 }
 
-function DefaultArrow({ visibility, color, borderColor }: {
-  visibility: DropdownVisibility,
-  color: string,
-  borderColor?: string
-}) {
+function DefaultArrow({ visibility, color, borderColor, animationDuration }: ArrowComponentProps) {
   return (
     <svg
       className={`dropdown-arrow ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
         ? 'open' : ''}`}
+      style={{
+        transition: `transform ${animationDuration / 1000}s ease`,
+      }}
       width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="45" stroke={borderColor ? borderColor : color} strokeWidth="1" fill="none" />
       <text x="50" y="60" fontSize="60" textAnchor="middle" alignmentBaseline="middle" fill={color}>▼</text>
