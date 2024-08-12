@@ -49,7 +49,9 @@ function App() {
       allowNoSelection
       width={300}
       padding={5}
-      maxDropHeight={220}
+      dropdownStyle={{
+        maxDropHeight: 220
+      }}
     />
   );
 }
