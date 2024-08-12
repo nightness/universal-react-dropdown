@@ -98,7 +98,7 @@ export function Dropdown<T>({
     if (selectedIndex >= 0 && itemRefs.current[selectedIndex]) {
       itemRefs.current[selectedIndex]?.scrollIntoView({
         behavior: 'smooth',
-        block: 'nearest',
+        block: 'start',
       });
     }
   }, [selectedIndex]);
