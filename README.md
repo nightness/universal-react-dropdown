@@ -52,6 +52,43 @@ The Dropdown component accepts the following props:
 - **Type**: `React.FC<{ color: string, borderColor?: string }>`
 - **Description**: A custom component to render the dropdown arrow. It receives `color` and `borderColor` as props.
 - **Default**: `DefaultArrow` component provided by the package.
+- **Example**:
+```jsx
+          ArrowComponent={({ visibility, color, borderColor }: {
+            visibility: DropdownVisibility,
+            color: string,
+            borderColor?: string
+          }) => (
+            <>
+              <svg
+                className="spin-left"
+                viewBox='0 0 30 30'
+                xmlns='http://www.w3.org/2000/svg'
+                height='30' width='30'
+              >
+                <rect x='25%' y='25%' width='25%' height='25%' fill='tomato' opacity='0.75' />
+                <rect x='25%' y='50%' width='25%' height='25%' fill='slategrey' opacity='0.75' />
+                <rect x='50%' y='25%' width='25%' height='25%' fill='olive' opacity='0.75' />
+              </svg>
+              <style>
+                {`
+                  .spin-right {                
+                    transform: ${
+                      visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
+                        ? 'rotate(45deg)' : 'rotate(225deg)'};
+                    transition: transform 0.3s ease;
+                  }
+                  .spin-left {                
+                    transform: ${
+                      visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
+                      ? 'rotate(45deg)' : 'rotate(-135deg)'};
+                    transition: transform 0.3s ease;
+                  }
+              `}
+              </style>
+            </>
+          )}
+```
 
 ### `renderItem` (required)
 - **Type**: `(item: T | null) => React.ReactNode`
@@ -128,6 +165,8 @@ The Dropdown component accepts the following props:
   - `fontWeight`: `number` - Font weight of the dropdown list items.
   - `fontFamily`: `string` - Font family of the dropdown list items.
   - `hoverColor`: `string` - Background color of items when hovered.
+  - `selectedColor`: `string` - Selected text color
+  - `selectedBackgroundColor`: `string` - Selected background color
   - `separatorColor`: `string` - Color of the separator between items.
 
 ### `disabled`
