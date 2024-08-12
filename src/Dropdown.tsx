@@ -40,7 +40,9 @@ export interface ComponentStyle extends CommonStyle {
 }
 
 export interface DropdownStyle extends CommonStyle {
+  dropdownDirection?: 'up' | 'down';
   hoverColor?: string;
+  maxDropHeight?: number;
   selectedColor?: string;
   selectedBackgroundColor?: string;
   separatorColor?: string;
@@ -53,7 +55,6 @@ interface DropdownProps<T> {
   ArrowComponent?: React.FC<{ color: string, borderColor?: string, visibility: DropdownVisibility }>;
   renderItem: (item: T | null, index: number, isSelected: boolean) => React.ReactNode;
   width?: number | string;
-  maxDropHeight?: number;
   padding?: number;
   onSelect?: (item: T | null, index: number) => void;
   border?: Border | string;
@@ -68,7 +69,6 @@ export function Dropdown<T>({
   ArrowComponent = DefaultArrow,
   items,
   renderItem,
-  maxDropHeight,
   onSelect,
   width = 'auto',
   padding = 10,
@@ -166,6 +166,9 @@ export function Dropdown<T>({
   const borderObject = toBorder(border);
   const borderStyle = `${borderObject.width}px ${borderObject.style} ${borderObject.color}`;
 
+  let maxDropHeight = '60vh';
+  if (dropdownStyle?.maxDropHeight) maxDropHeight = `${dropdownStyle?.maxDropHeight}px`;
+
   return (
     <>
       <div className="dropdown" ref={dropdownRef}>
@@ -192,8 +195,14 @@ export function Dropdown<T>({
             visibility={visibility}
           />
         </div>
-        <ul className={`dropdown-list ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'dropdown-open' : 'dropdown-closed'
-          }`}>
+        <ul
+          className={`dropdown-list`}
+          style={{
+            top: dropdownStyle?.dropdownDirection === 'down' ? '100%' : 'auto',
+            bottom: dropdownStyle?.dropdownDirection === 'up' ? '100%' : 'auto',
+            maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
+          }}
+        >
           {allowNoSelection && (
             <li onClick={() => handleItemClick(null, -1)}
 
@@ -259,14 +268,6 @@ export function Dropdown<T>({
           overflow-y: scroll;
           z-index: 1000;
           transition: max-height 0.3s ease, opacity 0.3s ease;
-        }
-        .dropdown-open {
-          max-height: ${maxDropHeight ? `${maxDropHeight}px` : '60vh'};
-          opacity: 1;
-        }
-        .dropdown-closed {
-          max-height: 0;
-          opacity: 0;
         }
         .dropdown-list li {
           color: ${dropdownStyle?.color || 'black'};
