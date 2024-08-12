@@ -261,7 +261,7 @@ export function Dropdown<T>({
           transition: max-height 0.3s ease, opacity 0.3s ease;
         }
         .dropdown-open {
-          max-height: ${maxDropHeight}px;
+          max-height: ${maxDropHeight ? `${maxDropHeight}px` : '60vh'};
           opacity: 1;
         }
         .dropdown-closed {
