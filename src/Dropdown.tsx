@@ -90,8 +90,18 @@ export function Dropdown<T>({
   const [visibility, setVisibility] = useState<DropdownVisibility>(DropdownVisibility.Closed);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
+
+  const ensureVisible = useCallback(() => {
+    if (selectedIndex >= 0 && itemRefs.current[selectedIndex]) {
+      itemRefs.current[selectedIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [selectedIndex]);
 
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION;
 
@@ -109,9 +119,12 @@ export function Dropdown<T>({
 
   // Start the opening dropdown animation
   function openDropdown() {
+    ensureVisible();
     setVisibility(DropdownVisibility.Opening);
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
-    animationTimeout.current = setTimeout(() => setVisibility(DropdownVisibility.Open), animationDuration);
+    animationTimeout.current = setTimeout(() => {
+      setVisibility(DropdownVisibility.Open);
+    }, animationDuration);
   }
 
   // Close the dropdown when clicking outside of it
@@ -231,7 +244,10 @@ export function Dropdown<T>({
             </li>
           )}
           {items.map((item, index) => (
-            <li key={index} onClick={() => !disabled && handleItemClick(item, index)}
+            <li
+              key={index}
+              ref={el => itemRefs.current[index] = el} // Attach the ref here
+              onClick={() => !disabled && handleItemClick(item, index)}
               style={{
                 color: selectedItem === item ? dropdownStyle?.selectedColor : dropdownStyle?.color,
                 backgroundColor: selectedItem === item ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
