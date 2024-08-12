@@ -72,7 +72,7 @@ The Dropdown component accepts the following props:
 - **Description**: A custom component to render the dropdown arrow. It receives `color` and `borderColor` as props.
 - **Default**: `DefaultArrow` component provided by the package.
 - **Example**:
-```jsx
+```tsx
 function ArrowComponent({ visibility, color, borderColor }: {
   visibility: DropdownVisibility;
   color: string;
@@ -81,29 +81,24 @@ function ArrowComponent({ visibility, color, borderColor }: {
   return (
     <>
       <svg
-        className="spin-left"
         viewBox='0 0 30 30'
         xmlns='http://www.w3.org/2000/svg'
         height='30' width='30'
+        style={{
+
+          // Clockwise rotation
+          transform: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'rotate(45deg)' : 'rotate(-135deg)',
+
+          // Counter-clockwise rotation
+          // transform: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'rotate(45deg)' : 'rotate(225deg)',
+
+          transition: `transform 0.3s ease`,
+        }}
       >
         <rect x='25%' y='25%' width='25%' height='25%' fill='tomato' opacity='0.75' />
         <rect x='25%' y='50%' width='25%' height='25%' fill='slategrey' opacity='0.75' />
         <rect x='50%' y='25%' width='25%' height='25%' fill='olive' opacity='0.75' />
       </svg>
-      <style>
-        {`
-        .spin-right {                
-          transform: ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
-            ? 'rotate(45deg)' : 'rotate(225deg)'};
-          transition: transform 0.3s ease;
-        }
-        .spin-left {                
-          transform: ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
-            ? 'rotate(45deg)' : 'rotate(-135deg)'};
-          transition: transform 0.3s ease;
-        }
-      `}
-      </style>
     </>
   );
 }
