@@ -18,21 +18,38 @@ Here is a basic example of how to use the Dropdown component:
 import React from 'react';
 import { Dropdown } from 'universal-react-dropdown';
 
-const items = ['Item 1', 'Item 2', 'Item 3'];
+const items = [
+  { id: 1, name: 'Item 1' },
+  { id: 2, name: 'Item 2' },
+  { id: 3, name: 'Item 3' },
+  { id: 4, name: 'Item 4' },
+  { id: 5, name: 'Item 5' },
+  { id: 6, name: 'Item 6' },
+  { id: 7, name: 'Item 7' },
+  { id: 8, name: 'Item 8' },
+  { id: 9, name: 'Item 9' },
+  { id: 10, name: 'Item 10' },
+];
 
 function App() {
   const handleSelect = (item) => {
     console.log('Selected item:', item);
   };
 
-  const renderItem = (item) => (item ? <span>{item}</span> : <span>No Selection</span>);
+  const renderItem = (item, index, isSelected) => (
+    <div style={{ minHeight: '22px', fontWeight: isSelected ? '800' : '400' }}>{item?.name}</div>
+  );
 
   return (
     <Dropdown
       items={items}
       renderItem={renderItem}
       onSelect={handleSelect}
-      placeholder={{ text: 'Select an item', color: '#999' }}
+      placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
+      allowNoSelection
+      width={300}
+      padding={5}
+      maxDropHeight={220}
     />
   );
 }
@@ -94,14 +111,15 @@ function ArrowComponent({ visibility, color, borderColor }: {
 - **Type**: `(item: T | null) => React.ReactNode`
 - **Description**: A function to render each item in the dropdown. This allows for custom item rendering logic.
 
-### `width`
+### `width` (recommended)
 - **Type**: `number | string`
-- **Description**: The width of the dropdown component.
+- **Description**: The width of the dropdown component. Specifying a width is recommended, without one the width will only be as wide as your widest element.
 - **Default**: `'auto'`
 
 ### `maxDropHeight`
 - **Type**: `number`
 - **Description**: Maximum height of the dropdown list when open, useful for limiting the visible area and enabling scrolling.
+- **Default**: `'60vh'`
 
 ### `padding`
 - **Type**: `number`
