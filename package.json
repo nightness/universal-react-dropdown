@@ -1,11 +1,14 @@
 {
   "name": "universal-react-dropdown",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nightness/universal-react-dropdown"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "publish": "npm run build && npm publish --access public",
