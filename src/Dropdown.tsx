@@ -41,9 +41,11 @@ export interface ComponentStyle extends CommonStyle {
 
 export interface DropdownStyle extends CommonStyle {
   hoverColor?: string;
-  separatorColor?: string;
   selectedColor?: string;
   selectedBackgroundColor?: string;
+  separatorColor?: string;
+  separatorThickness?: number;
+  separatorStyle?: 'solid' | 'dotted' | 'dashed';
 }
 
 interface DropdownProps<T> {
@@ -218,7 +220,7 @@ export function Dropdown<T>({
       <style>{`
         .dropdown {
           position: relative;
-          width: ${typeof width === "number" ? `${width}px`: width};
+          width: ${typeof width === "number" ? `${width}px` : width};
           font-family: ${componentStyle?.fontFamily};
           font-size: ${componentStyle?.fontSize}px;
           font-weight: ${componentStyle?.fontWeight};
@@ -270,7 +272,9 @@ export function Dropdown<T>({
           color: ${dropdownStyle?.color || 'black'};
           padding: ${padding}px;
           cursor: pointer;
-          ${dropdownStyle?.separatorColor ? `border-bottom: 1px solid ${dropdownStyle?.separatorColor};` : ""}
+          ${dropdownStyle?.separatorColor ? `border-bottom: ${dropdownStyle?.separatorThickness || 1
+          }px ${dropdownStyle?.separatorStyle || 'solid'
+          } ${dropdownStyle?.separatorColor};` : ""}
         }      
         .dropdown-list li:hover {
           background-color: ${dropdownStyle?.hoverColor || 'transparent'};
@@ -288,7 +292,7 @@ function DefaultArrow({ visibility, color, borderColor }: {
   return (
     <svg
       className={`dropdown-arrow ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
-          ? 'open' : ''}`}
+        ? 'open' : ''}`}
       width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="45" stroke={borderColor ? borderColor : color} strokeWidth="1" fill="none" />
       <text x="50" y="60" fontSize="60" textAnchor="middle" alignmentBaseline="middle" fill={color}>▼</text>
