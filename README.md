@@ -116,14 +116,9 @@ function ArrowComponent({ visibility, color, borderColor }: {
 - **Description**: The width of the dropdown component. Specifying a width is recommended, without one the width will only be as wide as your widest element.
 - **Default**: `'auto'`
 
-### `maxDropHeight`
-- **Type**: `number`
-- **Description**: Maximum height of the dropdown list when open, useful for limiting the visible area and enabling scrolling.
-- **Default**: `'60vh'`
-
 ### `padding`
 - **Type**: `number`
-- **Description**: Padding inside the dropdown header.
+- **Description**: The amount of padding to use inside the dropdown header and dropdown list.
 - **Default**: `10`
 
 ### `onSelect`
@@ -176,6 +171,7 @@ function ArrowComponent({ visibility, color, borderColor }: {
 
 #### `DropdownStyle` Object
 - **Properties**:
+  - `dropdownDirection?`: `'up' | 'down'` - Display the drop list below the header or above.
   - `border`: `Border | string` - Border style of the dropdown list.
   - `backgroundColor`: `string` - Background color of the dropdown list.
   - `color`: `string` - Text color of the dropdown list items.
@@ -183,6 +179,7 @@ function ArrowComponent({ visibility, color, borderColor }: {
   - `fontWeight`: `number` - Font weight of the dropdown list items.
   - `fontFamily`: `string` - Font family of the dropdown list items.
   - `hoverColor`: `string` - Background color of items when hovered.
+  - `maxDropHeight`: `number` - Maximum height of the dropdown list when open, useful for limiting the visible area and enabling scrolling. Default: `'60vh'`
   - `selectedColor`: `string` - Selected text color
   - `selectedBackgroundColor`: `string` - Selected background color
   - `separatorColor`: `string` - Color of the separator between items.
