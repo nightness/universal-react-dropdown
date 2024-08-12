@@ -189,7 +189,7 @@ export function Dropdown<T>({
           className="dropdown-header"
           onClick={toggleDropdown}
           style={componentStyle ? {
-            ...componentStyle, border: borderObject.color
+            ...componentStyle, border: borderStyle
           } : undefined}
           onWheel={onWheel}
         >
@@ -212,6 +212,8 @@ export function Dropdown<T>({
         <ul
           className={`dropdown-list ${dropdownStyle?.dropdownDirection === 'up' ? 'up' : 'down'}`}
           style={{
+            border: borderStyle,
+            borderTop: 'none',
             maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
             opacity: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 1 : 0,
             transition: `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`,
