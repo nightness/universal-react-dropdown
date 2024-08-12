@@ -118,13 +118,6 @@ export function Dropdown<T>({
     }
   }, [selectedIndex]);
 
-  // useEffect(() => {
-  //   if (visibility === DropdownVisibility.Open) {
-  //     ensureVisible();
-  //   }
-  // }, [visibility, ensureVisible]);
-
-
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION;
 
   // Start the closing dropdown animation. The callback is used when the animation is done
