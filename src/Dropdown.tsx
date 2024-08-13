@@ -58,6 +58,31 @@ export interface ArrowComponentProps {
   animationDuration: number;
 }
 
+interface ScrollData {
+  visibleHeight: number;
+  totalHeight: number;
+  scrollPosition: number;
+  maxScroll: number;
+  client: {
+    height: number | undefined;
+    left: number | undefined;
+    top: number | undefined;
+    width: number | undefined;
+  };
+  offset: {
+    height: number | undefined;
+    left: number | undefined;
+    top: number | undefined;
+    width: number | undefined;
+  };
+  scroll: {
+    height: number | undefined;
+    left: number | undefined;
+    top: number | undefined;
+    width: number | undefined;
+  };
+}
+
 interface DropdownProps<T> {
   items: T[];
   ArrowComponent?: React.FC<ArrowComponentProps>;
@@ -90,35 +115,59 @@ export function Dropdown<T>({
   const [visibility, setVisibility] = useState<DropdownVisibility>(DropdownVisibility.Closed);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
+  const scrollData = useRef<ScrollData | null>(null);
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLUListElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
-
-  // Determine the selected item index is visible inside the dropdown list
-  const ensureVisible = useCallback(() => {
-    // Selected ref
-    const selectedRef = itemRefs.current[selectedIndex];
-
-    // Is the selected item visible?
-    if (!selectedRef) return;
-    const isVisible = selectedRef?.getBoundingClientRect().top >= 0 && selectedRef?.getBoundingClientRect().bottom <= window.innerHeight;
-    
-    // Scroll the selected item into view if needed
-    if (!isVisible && selectedIndex > 0) {
-      const previousRef = itemRefs.current[selectedIndex - 1];
-      previousRef?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'end',
-      });
-    } else if (!isVisible && selectedIndex === 0) {
-      itemRefs.current[0]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }
-  }, [selectedIndex]);
-
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION;
+
+  // Ensure the selected item is fully visible within the dropdown
+  const ensureVisible = useCallback(() => {
+    if (selectedIndex < 0 || !listRef.current || !itemRefs.current[selectedIndex]) return;
+    
+    const { client, offset, scroll } = scrollData.current || {};
+    if (!client || !offset || !scroll) return;
+
+    // The position of the selected item
+    const selectedItemPosition = itemRefs.current[selectedIndex].offsetTop;
+
+    // Move the selected item to the top of the dropdown list
+    listRef.current.scrollTop = selectedItemPosition;
+
+    // TODO: Implement the following logic properly to ensure the selected item is fully visible,
+    //       not just move to the top of the list. This method attempts to scroll to the selected item
+    //       using the shortest scroll distance.
+
+    // // Visible height of the dropdown
+    // const visibleHeight = client.height || 0;
+    
+    // // Scroll top position
+    // const scrollTop = scroll.top || 0;
+
+    // // Number of items in the list and height per item    
+    // const listItemCount = items.length + (allowNoSelection ? 1 : 0);
+    // const heightPerItem = visibleHeight / listItemCount;
+
+    // // The position of the dropdown list
+    // const listPosition = listRef.current.offsetTop;
+
+    // // The position of the selected item relative to the dropdown list
+    // const relativePosition = selectedItemPosition - listPosition;
+
+    // // The position of the selected item relative to the visible height
+    // const relativeToVisible = relativePosition - scrollTop;
+
+    // if (relativeToVisible < 0) {
+    //   // listRef.current.scrollTop = selectedItemPosition;
+    //   // listRef.current.scrollBy(0, -heightPerItem);
+    // }
+
+    // // If the selected item is below the visible area, scroll down
+    // if (relativeToVisible > visibleHeight) {
+    //   listRef.current.scrollTop = (selectedItemPosition - visibleHeight) + (heightPerItem * 2.5);
+    // }
+  }, [selectedIndex]);
 
   // Start the closing dropdown animation. The callback is used when the animation is done
   // to delay updating the parent component until the animation is done.
@@ -129,7 +178,6 @@ export function Dropdown<T>({
       setVisibility(DropdownVisibility.Closed)
       callback();
     }, animationDuration);
-
   }
 
   // Start the opening dropdown animation
@@ -238,6 +286,7 @@ export function Dropdown<T>({
           />
         </div>
         <ul
+          ref={listRef}
           className={`dropdown-list ${dropdownStyle?.dropdownDirection === 'up' ? 'up' : 'down'}`}
           style={{
             border: borderStyle,
@@ -245,6 +294,10 @@ export function Dropdown<T>({
             maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
             opacity: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 1 : 0,
             transition: `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`,
+          }}
+          onScroll={(e) => {
+            // This keeps track of the scroll data, like the visible height, total height, position, etc.
+            scrollData.current = toScrollData(e.nativeEvent.target);
           }}
         >
           {allowNoSelection && (
@@ -363,4 +416,67 @@ function toBorder(border: Border | string): Border {
     };
   }
   return border;
+}
+
+function toScrollData(event: EventTarget | null): ScrollData | null {
+  if (!event) return null;
+  // @ts-ignore - not defined in the type definition
+  const clientHeight: number | undefined = event?.clientHeight;
+  // @ts-ignore - not defined in the type definition
+  const clientLeft: number | undefined = event?.clientLeft;
+  // @ts-ignore - not defined in the type definition
+  const clientTop: number | undefined = event?.clientTop;
+  // @ts-ignore - not defined in the type definition
+  const clientWidth: number | undefined = event?.clientWidth;
+
+  // @ts-ignore - not defined in the type definition
+  const offsetHeight: number | undefined = event?.offsetHeight;
+  // @ts-ignore - not defined in the type definition
+  const offsetLeft: number | undefined = event?.offsetLeft;
+  // @ts-ignore - not defined in the type definition
+  const offsetTop: number | undefined = event?.offsetTop;
+  // @ts-ignore - not defined in the type definition
+  const offsetWidth: number | undefined = event?.offsetWidth;
+
+  // @ts-ignore - not defined in the type definition
+  const scrollHeight: number | undefined = event?.scrollHeight;
+  // @ts-ignore - not defined in the type definition
+  const scrollLeft: number | undefined = event?.scrollLeft;
+  // @ts-ignore - not defined in the type definition
+  const scrollTop: number | undefined = event?.scrollTop;
+  // @ts-ignore - not defined in the type definition
+  const scrollWidth: number | undefined = event?.scrollWidth;
+
+  // Height
+  const visibleHeight = clientHeight || 0;
+  const totalHeight = scrollHeight || 0;
+
+  // Scroll position
+  const scrollPosition = scrollTop || 0;
+  const maxScroll = totalHeight - visibleHeight;
+
+  return {
+    visibleHeight,
+    totalHeight,
+    scrollPosition,
+    maxScroll,
+    client: {
+      height: clientHeight,
+      left: clientLeft,
+      top: clientTop,
+      width: clientWidth,
+    },
+    offset: {
+      height: offsetHeight,
+      left: offsetLeft,
+      top: offsetTop,
+      width: offsetWidth,
+    },
+    scroll: {
+      height: scrollHeight,
+      left: scrollLeft,
+      top: scrollTop,
+      width: scrollWidth,
+    }
+  }
 }
