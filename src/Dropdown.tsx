@@ -129,44 +129,22 @@ export function Dropdown<T>({
     const { client, offset, scroll } = scrollData.current || {};
     if (!client || !offset || !scroll) return;
 
-    // The position of the selected item
+    // Safe numbers
+    const scrollTop = scroll.top || 0;
+    const clientHeight = client.height || 0;
+
+    // The position and height of the selected item
     const selectedItemPosition = itemRefs.current[selectedIndex].offsetTop;
+    const selectedItemHeight = itemRefs.current[selectedIndex].offsetHeight;
+
+    // Guard clause to prevent scrolling if the selected item is already visible
+    if (selectedItemPosition >= scrollTop && selectedItemPosition + selectedItemHeight <= scrollTop + clientHeight) return;
 
     // Move the selected item to the top of the dropdown list
-    listRef.current.scrollTop = selectedItemPosition;
-
-    // TODO: Implement the following logic properly to ensure the selected item is fully visible,
-    //       not just move to the top of the list. This method attempts to scroll to the selected item
-    //       using the shortest scroll distance.
-
-    // // Visible height of the dropdown
-    // const visibleHeight = client.height || 0;
-    
-    // // Scroll top position
-    // const scrollTop = scroll.top || 0;
-
-    // // Number of items in the list and height per item    
-    // const listItemCount = items.length + (allowNoSelection ? 1 : 0);
-    // const heightPerItem = visibleHeight / listItemCount;
-
-    // // The position of the dropdown list
-    // const listPosition = listRef.current.offsetTop;
-
-    // // The position of the selected item relative to the dropdown list
-    // const relativePosition = selectedItemPosition - listPosition;
-
-    // // The position of the selected item relative to the visible height
-    // const relativeToVisible = relativePosition - scrollTop;
-
-    // if (relativeToVisible < 0) {
-    //   // listRef.current.scrollTop = selectedItemPosition;
-    //   // listRef.current.scrollBy(0, -heightPerItem);
-    // }
-
-    // // If the selected item is below the visible area, scroll down
-    // if (relativeToVisible > visibleHeight) {
-    //   listRef.current.scrollTop = (selectedItemPosition - visibleHeight) + (heightPerItem * 2.5);
-    // }
+    listRef.current.scrollTo({
+      top: selectedItemPosition - (Math.floor(client.height || 0)) / 2 + selectedItemHeight / 2,
+      behavior: 'smooth',
+    })
   }, [selectedIndex]);
 
   // Start the closing dropdown animation. The callback is used when the animation is done
