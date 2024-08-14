@@ -1,12 +1,31 @@
 import React, { useState, useRef, useEffect, useCallback, WheelEventHandler } from 'react';
 
 const DEFAULT_TRANSITION_DURATION = 300;
+const DEFAULT_PADDING = 10;
+const DEFAULT_ARROW_SIZE = 30;
 
 export enum DropdownVisibility {
   Opening,  // Animating open
   Open,     // Fully open
   Closing,  // Animating close
   Closed,   // Fully closed
+}
+
+export interface ListItemEventTarget extends EventTarget {
+  clientHeight: number;
+  clientLeft: number;
+  clientTop: number;
+  clientWidth: number;
+
+  offsetHeight: number;
+  offsetLeft: number;
+  offsetTop: number;
+  offsetWidth: number;
+
+  scrollHeight: number;
+  scrollLeft: number;
+  scrollTop: number;
+  scrollWidth: number;
 }
 
 export interface Border {
@@ -37,6 +56,8 @@ export interface Placeholder {
 export interface ComponentStyle extends CommonStyle {
   arrowColor?: string;
   arrowBorderColor?: string;
+  arrowHeight?: number;
+  arrowWidth?: number;
 }
 
 export interface DropdownStyle extends CommonStyle {
@@ -51,7 +72,13 @@ export interface DropdownStyle extends CommonStyle {
   separatorStyle?: 'solid' | 'dotted' | 'dashed';
 }
 
+export interface Size {
+  height: number;
+  width: number;
+}
+
 export interface ArrowComponentProps {
+  size: Size;
   color: string;
   borderColor?: string;
   visibility: DropdownVisibility;
@@ -104,7 +131,7 @@ export function Dropdown<T>({
   renderItem,
   onSelect,
   width = 'auto',
-  padding = 10,
+  padding = DEFAULT_PADDING,
   placeholder,
   componentStyle,
   dropdownStyle,
@@ -120,7 +147,10 @@ export function Dropdown<T>({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const animationTimeout = useRef<NodeJS.Timeout>();
+  
+  // Animation related
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION;
+  const transition = `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`;
 
   // Ensure the selected item is fully visible within the dropdown
   const ensureVisible = useCallback(() => {
@@ -204,12 +234,14 @@ export function Dropdown<T>({
 
   // Handles the wheel event, adjusting the selected index by +/- 1
   const onWheel = (event: React.WheelEvent) => {
+    if (disabled) return;
     const increase = event.deltaY > 0;
     wheelAdjustment(increase);
   };
 
   // Toggles the dropdown visibility
   const toggleDropdown = () => {
+    if (disabled) return;
     if (visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening) {
       closeDropdown();
     } else {
@@ -233,8 +265,10 @@ export function Dropdown<T>({
   let maxDropHeight = '60vh';
   if (dropdownStyle?.maxDropHeight) maxDropHeight = `${dropdownStyle?.maxDropHeight}px`;
 
-  // Transition
-  const transition = `max-height ${animationDuration / 1000}s ease, opacity ${(dropdownStyle?.animationDuration || DEFAULT_TRANSITION_DURATION) / 1000}s ease`;
+  // Arrow size
+  const arrowHeight = componentStyle?.arrowHeight || DEFAULT_ARROW_SIZE
+  const arrowWidth = componentStyle?.arrowWidth || DEFAULT_ARROW_SIZE;
+  let arrowSize: Size = { height: arrowHeight, width: arrowWidth };
 
   return (
     <>
@@ -255,8 +289,9 @@ export function Dropdown<T>({
               fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 400,
               fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'undefined',
             }}
-          >{selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}</span>
+          >{selectedItem ? renderItem(selectedItem, selectedIndex, false) : (placeholder?.text || " ")}</span>
           <ArrowComponent
+            size={arrowSize}
             color={componentStyle?.arrowColor || 'black'}
             borderColor={componentStyle?.arrowBorderColor || 'black'}
             visibility={visibility}
@@ -275,16 +310,15 @@ export function Dropdown<T>({
           }}
           onScroll={(e) => {
             // This keeps track of the scroll data, like the visible height, total height, position, etc.
-            scrollData.current = toScrollData(e.nativeEvent.target);
+            scrollData.current = toScrollData(e.nativeEvent.target as ListItemEventTarget);
           }}
         >
           {allowNoSelection && (
-            <li onClick={() => handleItemClick(null, -1)}
-
+            <li
+              onClick={() => handleItemClick(null, -1)}
               style={{
                 backgroundColor: selectedItem === null ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
               }}
-
             >
               {renderItem(null, -1, false)}
             </li>
@@ -368,7 +402,7 @@ export function Dropdown<T>({
   );
 }
 
-function DefaultArrow({ visibility, color, borderColor, animationDuration }: ArrowComponentProps) {
+function DefaultArrow({ size, visibility, color, borderColor, animationDuration }: ArrowComponentProps) {
   return (
     <svg
       className={`dropdown-arrow ${visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening
@@ -376,7 +410,7 @@ function DefaultArrow({ visibility, color, borderColor, animationDuration }: Arr
       style={{
         transition: `transform ${animationDuration / 1000}s ease`,
       }}
-      width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+      width={size.width} height={size.height} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="45" stroke={borderColor ? borderColor : color} strokeWidth="1" fill="none" />
       <text x="50" y="60" fontSize="60" textAnchor="middle" alignmentBaseline="middle" fill={color}>▼</text>
     </svg>
@@ -396,34 +430,22 @@ function toBorder(border: Border | string): Border {
   return border;
 }
 
-function toScrollData(event: EventTarget | null): ScrollData | null {
+function toScrollData(event: ListItemEventTarget | null): ScrollData | null {
   if (!event) return null;
-  // @ts-ignore - not defined in the type definition
-  const clientHeight: number | undefined = event?.clientHeight;
-  // @ts-ignore - not defined in the type definition
-  const clientLeft: number | undefined = event?.clientLeft;
-  // @ts-ignore - not defined in the type definition
-  const clientTop: number | undefined = event?.clientTop;
-  // @ts-ignore - not defined in the type definition
-  const clientWidth: number | undefined = event?.clientWidth;
-
-  // @ts-ignore - not defined in the type definition
-  const offsetHeight: number | undefined = event?.offsetHeight;
-  // @ts-ignore - not defined in the type definition
-  const offsetLeft: number | undefined = event?.offsetLeft;
-  // @ts-ignore - not defined in the type definition
-  const offsetTop: number | undefined = event?.offsetTop;
-  // @ts-ignore - not defined in the type definition
-  const offsetWidth: number | undefined = event?.offsetWidth;
-
-  // @ts-ignore - not defined in the type definition
-  const scrollHeight: number | undefined = event?.scrollHeight;
-  // @ts-ignore - not defined in the type definition
-  const scrollLeft: number | undefined = event?.scrollLeft;
-  // @ts-ignore - not defined in the type definition
-  const scrollTop: number | undefined = event?.scrollTop;
-  // @ts-ignore - not defined in the type definition
-  const scrollWidth: number | undefined = event?.scrollWidth;
+  const {
+    clientHeight,
+    clientLeft,
+    clientTop,
+    clientWidth,
+    offsetHeight,
+    offsetLeft,
+    offsetTop,
+    offsetWidth,
+    scrollHeight,
+    scrollLeft,
+    scrollTop,
+    scrollWidth,
+  } = event;
 
   // Height
   const visibleHeight = clientHeight || 0;
