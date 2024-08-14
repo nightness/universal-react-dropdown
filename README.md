@@ -2,6 +2,35 @@
 
 universal-react-dropdown is a customizable React Dropdown component designed for flexible integration into React applications. This component allows for easy customization of styles and behavior, making it suitable for various use cases.
 
+## Key Features
+
+- **React 18.x Compatibility**: The only dependency is React 18.x, ensuring seamless integration with your existing React project.
+
+- **Fully Customizable**: Offers extensive customization options for styling, behavior, and layout to match your application's design needs.
+
+- **RenderItem Prop Support**: Allows you to define a custom rendering logic for dropdown items, providing flexibility in how each item is displayed.
+
+- **Mouse Wheel Scrolling**: Supports smooth scrolling of both closed and open lists using the mouse wheel, enhancing user experience.
+
+- **Arrow Customization**: Easily replace the default dropdown arrow with a custom component, allowing for further visual customization.
+
+- **Responsive Design**: Adapts well to different screen sizes and layouts, ensuring a consistent experience across devices.
+
+- **Ensures the visibility of the selected item**: If there is a selected item, and the user scrolls the selected item outside the view window before closing the dropdown (without changing selected item); when the user reopen the dropdown the select item will be scrolled to the center of the dropdown's view window.
+
+- **Conditional Placeholder**: Placeholder text can be customized with different colors, font sizes, and styles, appearing only when no item is selected.
+
+- **Configurable Dropdown Direction**: Choose whether the dropdown list appears above or below the trigger element, making it versatile for various UI designs. 
+
+- **Item Hover and Selection Styles**: Define custom hover and selection styles for dropdown items, enhancing visual feedback during user interactions.
+
+- **Support for Disabled State**: Easily disable the dropdown to prevent user interaction when necessary, maintaining control over the user interface.
+
+## Future Feature List
+
+- **Keyboard Navigation**: Full keyboard accessibility, allowing users to navigate and select items using the keyboard.
+
+
 ## Installation
 
 You can install the package via npm:
