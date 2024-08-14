@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback, WheelEventHandler } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 const DEFAULT_TRANSITION_DURATION = 300;
 const DEFAULT_PADDING = 10;
