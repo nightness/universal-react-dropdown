@@ -1,0 +1,13 @@
+.innerContainer {
+  display: flex;
+  height: calc(100% - 50px);
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: #2e323e;
+  user-select: none;
+  overflow: hidden;
+}
