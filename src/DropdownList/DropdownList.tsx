@@ -46,9 +46,6 @@ export function DropdownList<T>({
 
     const dropdownHeight = listRef.current.offsetHeight;
 
-    let maxDropHeight = `${dropdownHeight}px`;
-    if (dropdownStyle?.maxDropHeight) maxDropHeight = `${dropdownStyle?.maxDropHeight}px`;
-
     const { client, offset, scroll } = scrollData.current || {};
     if (!client || !offset || !scroll) return;
     const scrollTop = scroll.top || 0;

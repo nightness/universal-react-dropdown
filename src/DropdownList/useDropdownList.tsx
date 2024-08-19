@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { DropdownVisibility, ScrollData } from '../types';
-import { DEFAULT_MAX_DROP_HEIGHT } from '../constants';
+import { DEFAULT_MAX_DROP_HEIGHT, DEFAULT_ANIMATION_DURATION } from '../constants';
 
 interface UseDropdownProps<T> {
   items: T[];
@@ -15,7 +15,7 @@ export function useDropdownList<T>({
   items,
   onSelect,
   maxDropHeight = DEFAULT_MAX_DROP_HEIGHT,
-  animationDuration = 300,
+  animationDuration = DEFAULT_ANIMATION_DURATION,
   disabled = false,
   allowNoSelection = false,
 }: UseDropdownProps<T>) {
