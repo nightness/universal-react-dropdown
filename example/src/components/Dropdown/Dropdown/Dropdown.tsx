@@ -106,8 +106,8 @@ export function Dropdown<T>({
             style={{
               color: selectedItem ? componentStyle?.color : placeholder?.color || 'black',
               fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
-              fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 400,
-              fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'undefined',
+              fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 900,
+              fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'Times New Roman',
               paddingRight: `${padding}px`,
             }}
           >

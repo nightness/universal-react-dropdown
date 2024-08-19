@@ -1,8 +1,7 @@
 import FadeInComponent from "@components/FadeInComponent/FadeInComponent";
 import { Page } from "@components/index";
 
-import { Dropdown, DropdownVisibility } from "@components/Dropdown/Dropdown/Dropdown";
-import { ArrowComponentProps } from "@components/Dropdown/types";
+import { ArrowComponentProps, Dropdown, DropdownVisibility } from "@components/Dropdown";
 // import { ArrowComponentProps, Dropdown, DropdownVisibility } from "universal-react-dropdown";
 
 import "./TestPage.css";
