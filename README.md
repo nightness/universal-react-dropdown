@@ -30,10 +30,7 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 - **Border Radius Support**
 
-- **Keyboard Navigation**: Full keyboard accessibility, allowing users to navigate and select items using the keyboard.
-
-- **Keyboard Up and Down Arrow Keys** 
-
+- **Keyboard Navigation**: Full keyboard accessibility, allowing users to navigate and select items using the keyboard; keyboard up and down arrow keys.
 
 ## Installation
 

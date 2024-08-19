@@ -1,7 +1,7 @@
 ### Version 0.4.0
     - Major refactoring to clean up the code
-    - Added example project
-    - Fix ensureVisibility ...
+    - Added example project / development environment
+    - Fixed a bug in ensureVisibility
 
 ### Version 0.3.x
     - Added ensureVisibility
