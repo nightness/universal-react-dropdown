@@ -1,10 +1,6 @@
-Here’s a more concise and basic README for your example project:
+# Development environment for `universal-react-dropdown`
 
----
-
-# Example Project for `universal-react-dropdown`
-
-This is a basic example project to demonstrate the usage of the `universal-react-dropdown` package within a Vite-based React app.
+This is a vite development environment for the `universal-react-dropdown` package. The `universal-react-dropdown` package and this development environment use the same source files for to build from, making for an easy development experience from within a single repository. The source files that are used to build the `universal-react-dropdown` package are located within the `src/components/Dropdown` folder. The test instantiation of the Dropdown components is in `src/router/pages/TestPage.tsx` file.
 
 ## Setup
 
@@ -35,4 +31,4 @@ npm run build
 
 ## Notes
 
-- The `predev` script is set up to build the `universal-react-dropdown` package before starting the development server.
+- 
