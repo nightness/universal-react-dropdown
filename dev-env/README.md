@@ -9,7 +9,7 @@ This is a vite development environment for the `universal-react-dropdown` packag
 Navigate to the example project directory and install the required dependencies:
 
 ```bash
-cd example
+cd dev-env
 npm install
 ```
 
@@ -19,13 +19,5 @@ To start the development server:
 
 ```bash
 npm run dev
-```
-
-### Build the Project
-
-To build the project for production:
-
-```bash
-npm run build
 ```
 
