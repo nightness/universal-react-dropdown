@@ -1,6 +1,6 @@
 # Development environment for `universal-react-dropdown`
 
-This is a vite development environment for the `universal-react-dropdown` package. The `universal-react-dropdown` package and this development environment use the same source files for to build from, making for an easy development experience from within a single repository. The source files that are used to build the `universal-react-dropdown` package are located within the `src/components/Dropdown` folder. The test instantiation of the Dropdown components is in `src/router/pages/TestPage.tsx` file.
+This is a vite development environment for the `universal-react-dropdown` package. The `universal-react-dropdown` package and this development environment use the same source files to build from, making for an easy development experience from within a single repository. The source files that are used to build the `universal-react-dropdown` package are located within the `src/components/Dropdown` folder. The test instantiation of the Dropdown components is in `src/router/pages/TestPage.tsx` file.
 
 ## Setup
 
@@ -29,6 +29,3 @@ To build the project for production:
 npm run build
 ```
 
-## Notes
-
-- 
