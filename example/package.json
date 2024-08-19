@@ -1,9 +1,10 @@
 {
-  "name": "example",
+  "name": "example-universal-react-dropdown",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "cd .. && npm i && npm run build",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -16,7 +17,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
     "react-toastify": "^10.0.5",
-    "universal-react-dropdown": "^0.3.1"
+    "universal-react-dropdown": "file:.."
   },
   "devDependencies": {
     "@types/node": "^20.14.6",

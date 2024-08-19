@@ -1,3 +1,4 @@
+import React from 'react';
 import { DropdownVisibility, ArrowComponentProps } from '../types';
 
 export function DefaultArrow({ visibility, color, borderColor, animationDuration }: ArrowComponentProps) {
