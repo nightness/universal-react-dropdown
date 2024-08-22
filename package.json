@@ -1,6 +1,6 @@
 {
   "name": "universal-react-dropdown",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
@@ -10,7 +10,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && npm run copy-css",
+    "copy-css": "rsync -a --prune-empty-dirs --include '*/' --include '*.css' --exclude '*' dev-env/src/components/Dropdown/ dist/",
     "publish": "npm run build && npm publish --access public",
     "lint": "eslint 'src/**/*.{ts,tsx}'"
   },
@@ -29,6 +30,7 @@
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-import": "^2.25.2",
