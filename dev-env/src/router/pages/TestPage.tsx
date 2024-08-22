@@ -125,7 +125,7 @@ export default function Home() {
             renderItem={renderItem}
             placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
             onSelect={onSelect}
-            border={{ width: 2, style: 'solid', radius: 5, color: 'gold' }}
+            border={{ width: 2, style: 'solid', radius: 5, color: 'purple' }}
             // border='3px solid green'
             componentStyle={{
               // arrowColor: 'blue',
@@ -212,9 +212,9 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
           }s ease`,
         }}
       >
-        <rect x='25%' y='25%' width='25%' height='25%' fill='tomato' opacity='0.75' />
-        <rect x='25%' y='50%' width='25%' height='25%' fill='slategrey' opacity='0.75' />
-        <rect x='50%' y='25%' width='25%' height='25%' fill='olive' opacity='0.75' />
+        <rect x='25%' y='25%' width='25%' height='25%' fill='#58f' opacity='0.75' />
+        <rect x='25%' y='50%' width='25%' height='25%' fill='#85f' opacity='0.75' />
+        <rect x='50%' y='25%' width='25%' height='25%' fill='#f85' opacity='0.75' />
       </svg>
     </>
   );
