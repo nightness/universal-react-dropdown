@@ -33,3 +33,6 @@ pnpm-lock.yaml
 
 # Firebase
 .firebase
+
+# Personal Notes
+TODO.md
