@@ -1,8 +1,13 @@
 import "./index.css";
-import FadeInComponent from '@components/FadeInComponent/FadeInComponent';
-import Page from '@components/Page/Page';
+
+import Button from "./Button/Button";
+import Page from './Page/Page';
+import Text from "./Text/Text";
+import TextInput from "./TextInput/TextInput";
 
 export {
-  FadeInComponent,
+  Button,
   Page,
+  Text,
+  TextInput,
 };

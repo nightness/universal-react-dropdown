@@ -96,8 +96,6 @@ export function DropdownList<T>({
           style={{
             color: selectedItem === item ? dropdownStyle?.selectedColor : dropdownStyle?.color,
             backgroundColor: selectedItem === item ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
-            paddingLeft: `${padding}px`,
-            paddingRight: `${padding}px`,
           }}
         >
           {renderItem(item, index, selectedIndex === index)}

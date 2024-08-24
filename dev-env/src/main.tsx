@@ -9,13 +9,18 @@ import GlobalProvider from "./providers/GlobalProvider.tsx";
 // styles
 import "./index.css";
 import "react-toastify/dist/ReactToastify.css";
+import { CSSVarsProvider } from "@providers/CssVarsProvider.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <GlobalProvider>
-        <App />
-      </GlobalProvider>
+      <CSSVarsProvider defaultVars={{
+          "--test-color": "#0b1c33"
+        }}>
+        <GlobalProvider>
+          <App />
+        </GlobalProvider>
+      </CSSVarsProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

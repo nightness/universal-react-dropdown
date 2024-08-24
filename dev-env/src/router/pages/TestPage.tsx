@@ -1,10 +1,12 @@
-import FadeInComponent from "@components/FadeInComponent/FadeInComponent";
 import { Page } from "@components/index";
 
 import { ArrowComponentProps, Dropdown, DropdownVisibility } from "@components/Dropdown";
 // import { ArrowComponentProps, Dropdown, DropdownVisibility } from "universal-react-dropdown";
 
 import "./TestPage.css";
+import { SquishyPressable } from "@components/SquishyPressable/SquishyPressable";
+import { useCSSVars } from "@providers/CssVarsProvider";
+import { useState } from "react";
 
 interface Item {
   id: number;
@@ -45,6 +47,7 @@ const items: Item[] = [
 
 export default function Home() {
   // const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const { setCSSVar, getCSSVar } = useCSSVars();
 
   const renderItem = (item: Item | null, index: number, isSelected: boolean) => (
     <div style={{ minHeight: '22px', fontWeight: isSelected ? '800' : '400' }}>{item?.name}</div>
@@ -55,139 +58,162 @@ export default function Home() {
     // setSelectedItem(item);
   };
 
+  const [testColor, setTestColor] = useState("Change Color");
+
   return (
     <Page
       style={{
+        backgroundColor: 'var(--test-color)',
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        height: '100%',
+        alignItems: 'center',
       }}
     >
-      <FadeInComponent
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          width: '100%',
-          height: '100%',
-        }}
-      >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '25vh',
-        }}>
-          <div>Dropdown Component 1</div>
-          <Dropdown
-            // ArrowComponent={ArrowComponent}
-            // allowNoSelection
-            // width={300}
-            padding={5}            
-            items={items}
-            renderItem={renderItem}
-            placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
-            onSelect={onSelect}
-            border={{ width: 3, style: 'solid', radius: 5, color: 'green' }}
-            // border='3px solid green'
-            componentStyle={{
-              // arrowColor: 'blue',
-              // arrowBorderColor: 'yellow',
-              backgroundColor: 'lightgray',
-            }}
-            dropdownStyle={{
-              animationDuration: 700,
-              backgroundColor: 'silver',
-              hoverColor: 'orange',
-              maxDropHeight: 300,
-              separatorColor: 'gray',
-              selectedBackgroundColor: 'lightblue',
-              selectedColor: 'black',
-              separatorThickness: 2,
-              separatorStyle: 'dotted'
-            }}
-          />
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '25vh',
-        }}>
-          <div>Dropdown Component 2</div>
-          <Dropdown
-            ArrowComponent={ArrowComponent}
-            allowNoSelection
-            width={300}
-            padding={5}
-            // maxDropHeight={220}
-            items={items}
-            renderItem={renderItem}
-            placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
-            onSelect={onSelect}
-            border={{ width: 2, style: 'solid', radius: 5, color: 'purple' }}
-            // border='3px solid green'
-            componentStyle={{
-              // arrowColor: 'blue',
-              // arrowBorderColor: 'yellow',
-              border: {
-                width: 2,
-                style: 'solid',
-                radius: 25,
-                color: 'gold',
-              },
-              backgroundColor: 'lightgray',
-            }}
-            dropdownStyle={{
-              backgroundColor: 'silver',
-              hoverColor: 'orange',
-              maxDropHeight: 200,
-              separatorColor: 'gray',
-              selectedBackgroundColor: 'lightblue',
-              selectedColor: 'black',
-              separatorThickness: 2,
-              separatorStyle: 'dotted'
-            }}
-          />
-        </div>
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          height: '25vh',
-        }}>
-          <div>Dropdown Component 3</div>
-          <Dropdown
-            allowNoSelection
-            width={300}
-            padding={5}
-            // maxDropHeight={220}
-            items={items}
-            renderItem={renderItem}
-            placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
-            onSelect={onSelect}
-            // border={{ width: 1, style: 'solid', radius: 5, color: 'white' }}
-            // border='3px solid green'
-            componentStyle={{
-              // arrowColor: 'blue',
-              // arrowBorderColor: 'yellow',
-              backgroundColor: 'lightgray',
-            }}
-            dropdownStyle={{
-              backgroundColor: 'silver',
-              dropdownDirection: 'up',
-              hoverColor: 'orange',
-              separatorColor: 'gray',
-              selectedBackgroundColor: 'lightblue',
-              selectedColor: 'black',
-              separatorThickness: 2,
-              separatorStyle: 'dotted'
-            }}
-          />
-        </div>
-      </FadeInComponent>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '25vh',
+      }}>
+        <div>Dropdown Component 1</div>
+        <Dropdown
+          // ArrowComponent={ArrowComponent}
+          // allowNoSelection
+          // width={300}
+          padding={5}
+          items={items}
+          renderItem={renderItem}
+          placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
+          onSelect={onSelect}
+          border={{ width: 3, style: 'solid', radius: 5, color: 'green' }}
+          // border='3px solid green'
+          componentStyle={{
+            // arrowColor: 'blue',
+            // arrowBorderColor: 'yellow',
+            backgroundColor: 'lightgray',
+          }}
+          dropdownStyle={{
+            animationDuration: 700,
+            backgroundColor: 'silver',
+            hoverColor: 'orange',
+            maxDropHeight: 300,
+            separatorColor: 'gray',
+            selectedBackgroundColor: 'lightblue',
+            selectedColor: 'black',
+            separatorThickness: 2,
+            separatorStyle: 'dotted'
+          }}
+        />
+      </div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '25vh',
+      }}>
+        <div>Dropdown Component 2</div>
+        <Dropdown
+          ArrowComponent={ArrowComponent}
+          allowNoSelection
+          width={300}
+          padding={5}
+          // maxDropHeight={220}
+          items={items}
+          renderItem={renderItem}
+          placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
+          onSelect={onSelect}
+          border={{ width: 2, style: 'solid', radius: 5, color: 'purple' }}
+          // border='3px solid green'
+          componentStyle={{
+            // arrowColor: 'blue',
+            // arrowBorderColor: 'yellow',
+            border: {
+              width: 2,
+              style: 'solid',
+              radius: 25,
+              color: 'gold',
+            },
+            backgroundColor: 'lightgray',
+          }}
+          dropdownStyle={{
+            backgroundColor: 'silver',
+            hoverColor: 'orange',
+            maxDropHeight: 200,
+            separatorColor: 'gray',
+            selectedBackgroundColor: 'lightblue',
+            selectedColor: 'black',
+            separatorThickness: 2,
+            separatorStyle: 'dotted'
+          }}
+        />
+      </div>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%',
+        height: '25vh',
+      }}>
+        <div>Dropdown Component 3</div>
+        <Dropdown
+          allowNoSelection
+          width={300}
+          padding={5}
+          // maxDropHeight={220}
+          items={items}
+          renderItem={renderItem}
+          placeholder={{ text: 'Select an item', color: 'black', fontSize: 16, fontWeight: 300 }}
+          onSelect={onSelect}
+          // border={{ width: 1, style: 'solid', radius: 5, color: 'white' }}
+          // border='3px solid green'
+          componentStyle={{
+            // arrowColor: 'blue',
+            // arrowBorderColor: 'yellow',
+            backgroundColor: 'lightgray',
+          }}
+          dropdownStyle={{
+            backgroundColor: 'silver',
+            dropdownDirection: 'up',
+            hoverColor: 'orange',
+            separatorColor: 'gray',
+            selectedBackgroundColor: 'lightblue',
+            selectedColor: 'black',
+            separatorThickness: 2,
+            separatorStyle: 'dotted'
+          }}
+        />
+      </div>      
+      <SquishyPressable
+          style={{
+            width: 100,
+            backgroundColor: 'blue',
+            color: 'white',
+            borderRadius: 5,
+            marginTop: 10,
+          }}
+          onPress={() => {
+            // Generate a random color
+            const currentColor = getCSSVar('--test-color');
+            const randomNum = Math.floor(Math.random() * 16777215).toString(16);
+            const randomColor = `#${
+              randomNum.length < 6 ? "0".repeat(6 - randomNum.length) + randomNum : randomNum
+            }`;
+
+            console.log('Current color:', currentColor, 'Random color:', randomColor);
+
+            setCSSVar('--test-color', randomColor);
+            setTestColor(randomColor);
+          }}
+        >
+          {testColor}
+        </SquishyPressable>
     </Page>
   );
 }
@@ -207,9 +233,8 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
           // Counter-clockwise rotation
           // transform: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'rotate(45deg)' : 'rotate(225deg)',
 
-          transition: `transform ${
-            animationDuration / 1000
-          }s ease`,
+          transition: `transform ${animationDuration / 1000
+            }s ease`,
         }}
       >
         <rect x='25%' y='25%' width='25%' height='25%' fill='#58f' opacity='0.75' />
