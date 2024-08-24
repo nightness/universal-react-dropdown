@@ -1,0 +1,20 @@
+.button-common {
+  color: white !important;
+  background-color: #777 !important;
+  font-size: 12pt !important;
+  border-color: #ddd !important;
+  font-weight: 500 !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  width: auto;
+  border-radius: 10px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  align-content: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  cursor: pointer !important;
+}

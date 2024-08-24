@@ -1,0 +1,23 @@
+.squishy-pressable {
+  /* marginTop: "20px",
+  padding: "10px 20px",
+  backgroundColor: "#0073e6 !important",
+  color: "white",
+  borderRadius: "5px",
+  cursor: "pointer",
+  textDecoration: "none", */
+  background-color: darkslategrey !important;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s;
+  display: inline-block; /* or 'block' depending on your layout needs */
+}
+
+.squishy-pressable.pressed {
+  transform: scale(0.86);
+}
+
+.squishy-pressable.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

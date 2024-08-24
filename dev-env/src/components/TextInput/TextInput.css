@@ -1,0 +1,13 @@
+.text-input {
+  flex: 1;
+  background-color: #111;
+  color: #fff;
+  min-width: 200px;
+  border-radius: 5;
+  justify-self: center;
+  line-height: 1.5rem;
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
