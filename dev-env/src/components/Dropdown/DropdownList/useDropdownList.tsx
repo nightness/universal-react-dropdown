@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { DropdownVisibility, ScrollData } from '../types';
+import { DropdownVisibility, DropdownVisibilityType, ScrollData } from '../types';
 import { DEFAULT_MAX_DROP_HEIGHT, DEFAULT_ANIMATION_DURATION } from '../constants';
 
 interface UseDropdownProps<T> {
@@ -19,7 +19,7 @@ export function useDropdownList<T>({
   disabled = false,
   allowNoSelection = false,
 }: UseDropdownProps<T>) {
-  const [visibility, setVisibility] = useState<DropdownVisibility>(DropdownVisibility.Closed);
+  const [visibility, setVisibility] = useState<DropdownVisibilityType>(DropdownVisibility.Closed);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
   const scrollData = useRef<ScrollData | null>(null) as React.MutableRefObject<ScrollData | null>;

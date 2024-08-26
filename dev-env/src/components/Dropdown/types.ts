@@ -1,9 +1,11 @@
-export enum DropdownVisibility {
-  Opening,  // Animating open
-  Open,     // Fully open
-  Closing,  // Animating close
-  Closed,   // Fully closed
-}
+export const DropdownVisibility = {
+  Opening: 'Opening', // Animating open
+  Open: 'Open',       // Fully open
+  Closing: 'Closing', // Animating close
+  Closed: 'Closed',   // Fully closed
+} as const;
+type DropdownVisibilityValues<T> = T[keyof T];
+export type DropdownVisibilityType = DropdownVisibilityValues<typeof DropdownVisibility>;
 
 export interface Placeholder {
   text: string;
@@ -16,7 +18,7 @@ export interface Placeholder {
 export interface ArrowComponentProps {
   color: string;
   borderColor?: string;
-  visibility: DropdownVisibility;
+  visibility: DropdownVisibilityType;
   animationDuration: number;
 }
 

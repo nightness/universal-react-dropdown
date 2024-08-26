@@ -3,13 +3,11 @@ import { DEFAULT_ANIMATION_DURATION, DEFAULT_DROPDOWN_BORDER, DEFAULT_PADDING } 
 import { DefaultArrow } from '../DefaultArrow/DefaultArrow';
 import { DropdownList } from '../DropdownList/DropdownList';
 import { toScrollData } from '../helpers';
-import { DropdownVisibility, Border, ComponentStyle, DropdownStyle, ArrowComponentProps } from '../types';
+import { Border, ComponentStyle, DropdownStyle, ArrowComponentProps } from '../types';
 import { useDropdownList } from '../DropdownList/useDropdownList';
 import { DropdownHeaderStyleResult, DropdownStyleResult, useStyles } from '../useStyles';
 
 import './Dropdown.css';
-
-export { DropdownVisibility };
 
 interface Placeholder {
   text: string;

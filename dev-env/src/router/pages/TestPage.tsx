@@ -19,7 +19,7 @@ const items: Item[] = [
   { id: 3, name: 'Item 3' },
   { id: 4, name: 'Item 4' },
   { id: 5, name: 'Item 5' },
-  { id: 6, name: 'Item 6' },
+  { id: 6, name: 'Item 6 efefefewfewfew' },
   { id: 7, name: 'Item 7' },
   { id: 8, name: 'Item 8' },
   { id: 9, name: 'Item 9' },

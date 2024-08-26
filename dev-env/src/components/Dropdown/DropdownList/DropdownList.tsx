@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { DEFAULT_ANIMATION_DURATION, DEFAULT_MAX_DROP_HEIGHT } from '../constants';
-import { DropdownStyle, DropdownVisibility, ScrollData } from '../types';
+import { DropdownStyle, DropdownVisibility, DropdownVisibilityType, ScrollData } from '../types';
 
 import "./DropdownList.css";
 
@@ -10,7 +10,7 @@ interface DropdownListProps<T> {
   selectedIndex: number;
   allowNoSelection?: boolean;
   onItemClick: (item: T | null, index: number) => void;
-  visibility: DropdownVisibility;
+  visibility: DropdownVisibilityType;
   dropdownStyle?: DropdownStyle;
   padding?: number;
   borderStyle?: string;
