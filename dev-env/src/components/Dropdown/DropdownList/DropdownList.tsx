@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { MutableRefObject, ReactNode, RefObject, UIEvent, useEffect } from 'react';
 import { DEFAULT_ANIMATION_DURATION, DEFAULT_MAX_DROP_HEIGHT } from '../constants';
 import { DropdownStyle, DropdownVisibility, DropdownVisibilityType, ScrollData } from '../types';
 
@@ -14,12 +14,12 @@ interface DropdownListProps<T> {
   dropdownStyle?: DropdownStyle;
   padding?: number;
   borderStyle?: string;
-  listRef: React.RefObject<HTMLUListElement>;
-  itemRefs: React.RefObject<(HTMLLIElement | null)[]>;
-  scrollData: React.MutableRefObject<ScrollData | null>;
-  renderItem: (item: T | null, index: number, isSelected: boolean) => React.ReactNode;
+  listRef: RefObject<HTMLUListElement>;
+  itemRefs: RefObject<(HTMLLIElement | null)[]>;
+  scrollData: MutableRefObject<ScrollData | null>;
+  renderItem: (item: T | null, index: number, isSelected: boolean) => ReactNode;
   disabled?: boolean;
-  onScroll?: (e: React.UIEvent<HTMLUListElement>) => void;
+  onScroll?: (e: UIEvent<HTMLUListElement>) => void;
 }
 
 export function DropdownList<T>({
