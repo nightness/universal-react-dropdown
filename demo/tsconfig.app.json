@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
+      "universal-react-dropdown": ["../src"],
       "@components/*": ["src/components/*"],
       "@hooks/*": ["src/hooks/*"],
       "@providers/*": ["src/providers/*"],

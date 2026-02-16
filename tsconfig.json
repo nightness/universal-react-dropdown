@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["dev-env/src/components/Dropdown"],
-  "exclude": ["node_modules", "dist", "dev-env/node_modules", "dev-env/dist", "dev-env/public"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "demo/node_modules", "demo/dist", "demo/public"]
 }

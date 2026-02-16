@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "tsc && npm run copy-css",
-    "copy-css": "rsync -a --prune-empty-dirs --include '*/' --include '*.css' --exclude '*' dev-env/src/components/Dropdown/ dist/",
+    "copy-css": "rsync -a --prune-empty-dirs --include '*/' --include '*.css' --exclude '*' src/ dist/",
     "prepublishOnly": "npm run build",
     "lint": "eslint 'src/**/*.{ts,tsx}'"
   },

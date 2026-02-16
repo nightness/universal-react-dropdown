@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Page } from "@components/index";
-import { Dropdown } from "@components/Dropdown";
+import { Dropdown } from "universal-react-dropdown";
 import "./DemoPage.css";
 
 interface Item {

@@ -1,7 +1,6 @@
 import { Page } from "@components/index";
 
-import { ArrowComponentProps, Dropdown, DropdownVisibility } from "@components/Dropdown";
-// import { ArrowComponentProps, Dropdown, DropdownVisibility } from "universal-react-dropdown";
+import { ArrowComponentProps, Dropdown, DropdownVisibility } from "universal-react-dropdown";
 
 import "./TestPage.css";
 import { SquishyPressable } from "@components/SquishyPressable/SquishyPressable";
