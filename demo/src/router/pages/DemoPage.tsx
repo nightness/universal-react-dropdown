@@ -127,6 +127,12 @@ export default function DemoPage() {
 
   return (
     <Page style={{ padding: 0, height: '100%' }}>
+      <div className="demo-header">
+        <h1>universal-react-dropdown</h1>
+        <a href="https://github.com/nightness/universal-react-dropdown" target="_blank" rel="noopener noreferrer">
+          GitHub
+        </a>
+      </div>
       <div className="demo-page">
         <div className="demo-preview" style={{ backgroundColor: previewBgColor }}>
           <div className="demo-preview-inner" style={getPlacementStyle(hAlign, vAlign)}>

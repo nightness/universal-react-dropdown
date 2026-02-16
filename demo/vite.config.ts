@@ -4,6 +4,7 @@ import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/universal-react-dropdown/',
   resolve: {
     alias: {
       "universal-react-dropdown": path.resolve(__dirname, "../src"),
