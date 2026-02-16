@@ -39,7 +39,7 @@ export function getStyles(dStyle: DropdownStyleInput): DropdownStyleResult | Dro
       {
         const { width, componentStyle, border } = dStyle.style;
         const borderObject = toBorder(border);
-        const borderStyle = `${borderObject.width}px ${borderObject.style} ${borderObject.color}`;
+        const borderStyle = `${borderObject.width}px ${borderObject.style || 'solid'} ${borderObject.color || 'var(--urd-border-color)'}`;
         return {
           width: `${typeof width === 'number' ? `${width}px` : width}`,
           fontFamily: `${componentStyle?.fontFamily || 'Arial'}`,
@@ -55,7 +55,7 @@ export function getStyles(dStyle: DropdownStyleInput): DropdownStyleResult | Dro
       {
         const { componentStyle, padding } = dStyle.style;
         return {
-          backgroundColor: `${componentStyle.backgroundColor}`,
+          backgroundColor: `${componentStyle.backgroundColor || 'var(--urd-bg)'}`,
           padding: `${padding}px`,
           color: `${componentStyle.color || 'var(--urd-color)'}`,
         } as DropdownHeaderStyleResult ;

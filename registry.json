@@ -18,6 +18,7 @@
         { "path": "src/useStyles.tsx", "type": "registry:hook", "target": "components/universal-dropdown/useStyles.tsx" },
         { "path": "src/DefaultArrow/DefaultArrow.tsx", "type": "registry:component", "target": "components/universal-dropdown/DefaultArrow/DefaultArrow.tsx" },
         { "path": "src/Dropdown/Dropdown.tsx", "type": "registry:component", "target": "components/universal-dropdown/Dropdown/Dropdown.tsx" },
+        { "path": "src/theme.css", "type": "registry:file", "target": "components/universal-dropdown/theme.css" },
         { "path": "src/Dropdown/Dropdown.css", "type": "registry:file", "target": "components/universal-dropdown/Dropdown/Dropdown.css" },
         { "path": "src/DropdownList/DropdownList.tsx", "type": "registry:component", "target": "components/universal-dropdown/DropdownList/DropdownList.tsx" },
         { "path": "src/DropdownList/useDropdownList.tsx", "type": "registry:hook", "target": "components/universal-dropdown/DropdownList/useDropdownList.tsx" },
