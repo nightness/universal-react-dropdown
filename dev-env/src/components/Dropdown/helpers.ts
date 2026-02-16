@@ -2,7 +2,7 @@ import { Border, ScrollData } from "./types";
 
 export function toBorder(border: Border | string | undefined | null): Border {
   if (!border) {
-    return { color: 'transparent', width: 0, style: 'none', radius: '1px' };
+    return { color: 'transparent', width: 0, style: 'none', radius: 0 };
   }
   if (typeof border === 'string') {
     const [width, style, color] = border.split(' ');
@@ -10,7 +10,7 @@ export function toBorder(border: Border | string | undefined | null): Border {
       width: parseInt(width) || 0,
       style: style || 'none',
       color: color || 'transparent',
-      radius: '1px',
+      radius: 0,
     };
   }
   return border;
@@ -19,24 +19,11 @@ export function toBorder(border: Border | string | undefined | null): Border {
 export function toScrollData(event: EventTarget | null): ScrollData | null {
   if (!event) return null;
 
-  const clientHeight: number | undefined = (event as HTMLElement)?.clientHeight;
-  const clientLeft: number | undefined = (event as HTMLElement)?.clientLeft;
-  const clientTop: number | undefined = (event as HTMLElement)?.clientTop;
-  const clientWidth: number | undefined = (event as HTMLElement)?.clientWidth;
+  const el = event as HTMLElement;
 
-  const offsetHeight: number | undefined = (event as HTMLElement)?.offsetHeight;
-  const offsetLeft: number | undefined = (event as HTMLElement)?.offsetLeft;
-  const offsetTop: number | undefined = (event as HTMLElement)?.offsetTop;
-  const offsetWidth: number | undefined = (event as HTMLElement)?.offsetWidth;
-
-  const scrollHeight: number | undefined = (event as HTMLElement)?.scrollHeight;
-  const scrollLeft: number | undefined = (event as HTMLElement)?.scrollLeft;
-  const scrollTop: number | undefined = (event as HTMLElement)?.scrollTop;
-  const scrollWidth: number | undefined = (event as HTMLElement)?.scrollWidth;
-
-  const visibleHeight = clientHeight || 0;
-  const totalHeight = scrollHeight || 0;
-  const scrollPosition = scrollTop || 0;
+  const visibleHeight = el.clientHeight || 0;
+  const totalHeight = el.scrollHeight || 0;
+  const scrollPosition = el.scrollTop || 0;
   const maxScroll = totalHeight - visibleHeight;
 
   return {
@@ -45,22 +32,22 @@ export function toScrollData(event: EventTarget | null): ScrollData | null {
     scrollPosition,
     maxScroll,
     client: {
-      height: clientHeight,
-      left: clientLeft,
-      top: clientTop,
-      width: clientWidth,
+      height: el.clientHeight,
+      left: el.clientLeft,
+      top: el.clientTop,
+      width: el.clientWidth,
     },
     offset: {
-      height: offsetHeight,
-      left: offsetLeft,
-      top: offsetTop,
-      width: offsetWidth,
+      height: el.offsetHeight,
+      left: el.offsetLeft,
+      top: el.offsetTop,
+      width: el.offsetWidth,
     },
     scroll: {
-      height: scrollHeight,
-      left: scrollLeft,
-      top: scrollTop,
-      width: scrollWidth,
+      height: el.scrollHeight,
+      left: el.scrollLeft,
+      top: el.scrollTop,
+      width: el.scrollWidth,
     },
   };
 }

@@ -27,15 +27,12 @@ export function useDropdownList<T>({
   const dropdownRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
   const listRef = useRef<HTMLUListElement>(null) as React.RefObject<HTMLUListElement>;
   const animationTimeout = useRef<NodeJS.Timeout>();
+  const closeDropdownRef = useRef<(callback?: () => void) => void>(() => {});
 
   const ensureVisible = () => {
-    // console.log('ensureVisible', selectedIndex, selectedItem, !listRef.current, !itemRefs.current[selectedIndex]);
-    // listRef.current?.offsetHeight
     if (selectedIndex < 0 || !listRef.current || !itemRefs.current[selectedIndex]) return;
 
     const { client, scroll } = scrollData.current || {};
-    // console.log('client:', client, 'offset:', offset, 'scroll:', scroll);
-    // if (!client || !offset || !scroll) return;
 
     // Safe numbers
     const scrollTop = scroll?.top || 0;
@@ -57,14 +54,17 @@ export function useDropdownList<T>({
 
   // Start the closing dropdown animation. The callback is used when the animation is done
   // to delay updating the parent component until the animation is done.
-  function closeDropdown(callback: () => void = () => { }) {
+  const closeDropdown = useCallback((callback: () => void = () => { }) => {
     setVisibility(DropdownVisibility.Closing);
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
     animationTimeout.current = setTimeout(() => {
       setVisibility(DropdownVisibility.Closed);
       callback();
     }, animationDuration);
-  }
+  }, [animationDuration]);
+
+  // Keep the ref in sync so the click-outside handler always uses the latest version
+  closeDropdownRef.current = closeDropdown;
 
   // Start the opening dropdown animation
   const openDropdown = () => {
@@ -90,12 +90,19 @@ export function useDropdownList<T>({
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node | null))
-        closeDropdown();
+        closeDropdownRef.current();
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Clear animation timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (animationTimeout.current) clearTimeout(animationTimeout.current);
     };
   }, []);
 
@@ -106,21 +113,66 @@ export function useDropdownList<T>({
       setSelectedItem(item);
       closeDropdown(() => onSelect?.(item, index));
     },
-    [onSelect]
+    [onSelect, closeDropdown]
   );
 
-  // Close the dropdown when clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node | null))
-        closeDropdown();
-    };
+  // Handle keyboard navigation
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (disabled) return;
+    const isOpen = visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening;
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (isOpen && selectedIndex >= 0) {
+          onItemClick(items[selectedIndex], selectedIndex);
+        } else {
+          toggleDropdown();
+        }
+        break;
+      case 'Escape':
+        if (isOpen) {
+          event.preventDefault();
+          closeDropdown();
+        }
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        if (!isOpen) {
+          openDropdown();
+        }
+        setSelectedIndex((prev) => {
+          const next = prev >= items.length - 1 ? prev : prev + 1;
+          setSelectedItem(next >= 0 ? items[next] : null);
+          return next;
+        });
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        if (!isOpen) {
+          openDropdown();
+        }
+        setSelectedIndex((prev) => {
+          const next = prev <= 0 ? (allowNoSelection ? -1 : 0) : prev - 1;
+          setSelectedItem(next >= 0 ? items[next] : null);
+          return next;
+        });
+        break;
+      case 'PageDown':
+        event.preventDefault();
+        if (isOpen && listRef.current) {
+          listRef.current.scrollBy({ top: listRef.current.clientHeight, behavior: 'smooth' });
+        }
+        break;
+      case 'PageUp':
+        event.preventDefault();
+        if (isOpen && listRef.current) {
+          listRef.current.scrollBy({ top: -listRef.current.clientHeight, behavior: 'smooth' });
+        }
+        break;
+    }
+  };
 
   // Handles the wheel event, adjusting the selected index by +/- 1
   const onWheel = (event: React.WheelEvent) => {
@@ -158,8 +210,7 @@ export function useDropdownList<T>({
     closeDropdown,
     openDropdown,
     ensureVisible,
+    onKeyDown,
     onWheel,
   };
 }
-
-

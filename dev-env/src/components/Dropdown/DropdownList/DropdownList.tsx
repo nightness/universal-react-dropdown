@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactNode, RefObject, UIEvent, useEffect } from 'react';
+import React, { MutableRefObject, ReactNode, RefObject, UIEvent, useEffect, useState } from 'react';
 import { DEFAULT_ANIMATION_DURATION, DEFAULT_MAX_DROP_HEIGHT } from '../constants';
 import { DropdownStyle, DropdownVisibility, DropdownVisibilityType, ScrollData } from '../types';
 
@@ -20,6 +20,8 @@ interface DropdownListProps<T> {
   renderItem: (item: T | null, index: number, isSelected: boolean) => ReactNode;
   disabled?: boolean;
   onScroll?: (e: UIEvent<HTMLUListElement>) => void;
+  itemStyle?: React.CSSProperties;
+  itemHoverColor?: string;
 }
 
 export function DropdownList<T>({
@@ -37,32 +39,52 @@ export function DropdownList<T>({
   scrollData,
   renderItem,
   disabled = false,
-  onScroll
+  onScroll,
+  itemStyle = {},
+  itemHoverColor = 'transparent',
 }: DropdownListProps<T>) {
   const maxDropHeight = dropdownStyle?.maxDropHeight || DEFAULT_MAX_DROP_HEIGHT;
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
     if (selectedIndex < 0 || !listRef.current || !itemRefs.current?.[selectedIndex]) return;
 
-    const dropdownHeight = listRef.current.offsetHeight;
+    const list = listRef.current;
+    const scrollTop = list.scrollTop;
+    const clientHeight = list.clientHeight;
+    const itemTop = itemRefs.current[selectedIndex].offsetTop;
+    const itemHeight = itemRefs.current[selectedIndex].offsetHeight;
+    const itemBottom = itemTop + itemHeight;
 
-    const { client, offset, scroll } = scrollData.current || {};
-    if (!client || !offset || !scroll) return;
-    const scrollTop = scroll.top || 0;
-    const clientHeight = client.height || dropdownHeight;
-    const selectedItemPosition = itemRefs.current[selectedIndex].offsetTop;
-    const selectedItemHeight = itemRefs.current[selectedIndex].offsetHeight;
+    // Already fully visible — do nothing
+    if (itemTop >= scrollTop && itemBottom <= scrollTop + clientHeight) return;
 
-    if (selectedItemPosition >= scrollTop && selectedItemPosition + selectedItemHeight <= scrollTop + clientHeight) return;
-
-    listRef.current.scrollTo({
-      top: selectedItemPosition - (Math.floor(client.height || 0)) / 2 + selectedItemHeight / 2,
-      behavior: 'smooth',
-    });
+    // Item is below the viewport — scroll down just enough to show it at the bottom
+    if (itemBottom > scrollTop + clientHeight) {
+      list.scrollTo({ top: itemBottom - clientHeight, behavior: 'smooth' });
+    }
+    // Item is above the viewport — scroll up just enough to show it at the top
+    else if (itemTop < scrollTop) {
+      list.scrollTo({ top: itemTop, behavior: 'smooth' });
+    }
   }, [selectedIndex]);
 
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_ANIMATION_DURATION;
-  const transition = `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`; 
+  const transition = `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`;
+
+  const getItemStyle = (item: T | null, index: number): React.CSSProperties => {
+    const isSelected = selectedItem === item;
+    const isHovered = hoveredIndex === index;
+    return {
+      ...itemStyle,
+      color: isSelected ? dropdownStyle?.selectedColor : dropdownStyle?.color || 'black',
+      backgroundColor: isHovered
+        ? itemHoverColor
+        : isSelected
+          ? dropdownStyle?.selectedBackgroundColor
+          : dropdownStyle?.backgroundColor,
+    };
+  };
 
   return (
     <ul
@@ -81,9 +103,9 @@ export function DropdownList<T>({
       {allowNoSelection && (
         <li
           onClick={() => onItemClick(null, -1)}
-          style={{
-            backgroundColor: selectedItem === null ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
-          }}
+          onMouseEnter={() => setHoveredIndex(-1)}
+          onMouseLeave={() => setHoveredIndex(null)}
+          style={getItemStyle(null, -1)}
         >
           {renderItem(null, -1, false)}
         </li>
@@ -93,10 +115,9 @@ export function DropdownList<T>({
           key={index}
           ref={(el) => (itemRefs.current && (itemRefs.current[index] = el))}
           onClick={() => !disabled && onItemClick(item, index)}
-          style={{
-            color: selectedItem === item ? dropdownStyle?.selectedColor : dropdownStyle?.color,
-            backgroundColor: selectedItem === item ? dropdownStyle?.selectedBackgroundColor : dropdownStyle?.backgroundColor,
-          }}
+          onMouseEnter={() => setHoveredIndex(index)}
+          onMouseLeave={() => setHoveredIndex(null)}
+          style={getItemStyle(item, index)}
         >
           {renderItem(item, index, selectedIndex === index)}
         </li>

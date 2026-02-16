@@ -1,7 +1,7 @@
 import { toBorder } from "./helpers";
 import { Border, ComponentStyle } from "./types";
 
-type DropdownStyle = {
+type DropdownStyleInput = {
   name: 'dropdown';
   style: {
     width: number | string;
@@ -16,7 +16,7 @@ type DropdownStyle = {
   };
 };
 
-export interface DropdownStyleResult extends Partial<CSSStyleSheet> {
+export interface DropdownStyleResult {
   border: string;
   padding: string;
   width: string;
@@ -24,7 +24,7 @@ export interface DropdownStyleResult extends Partial<CSSStyleSheet> {
   fontSize: string;
   fontWeight: string;
   backgroundColor: string;
-};
+}
 
 export interface DropdownHeaderStyleResult {
   backgroundColor: string;
@@ -32,7 +32,7 @@ export interface DropdownHeaderStyleResult {
   color: string;
 }
 
-export function useStyles(dStyle: DropdownStyle): DropdownStyleResult | DropdownHeaderStyleResult {
+export function getStyles(dStyle: DropdownStyleInput): DropdownStyleResult | DropdownHeaderStyleResult {
   switch (dStyle.name) {
     case 'dropdown':
       {
@@ -44,10 +44,9 @@ export function useStyles(dStyle: DropdownStyle): DropdownStyleResult | Dropdown
           fontFamily: `${componentStyle?.fontFamily || 'Arial'}`,
           fontSize: `${componentStyle?.fontSize || 16}px`,
           fontWeight: `${componentStyle?.fontWeight || 400}`,
-          backgroundColor: `${borderObject.color}`,
+          backgroundColor: `${componentStyle?.backgroundColor || 'transparent'}`,
           padding: `${borderObject.width}px`,
           border: borderStyle,
-          // borderRadius: `${borderObject.radius}px`,  // FIXME: Add support for border radius
         } as DropdownStyleResult;
       }
     case 'dropdown-header':

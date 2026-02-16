@@ -6,7 +6,7 @@ export function DefaultArrow({ visibility, color, borderColor, animationDuration
     <svg
       style={{
         transition: `transform ${animationDuration / 1000}s ease`,
-        transform: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'rotate(180deg)' : 'rotate(0deg',
+        transform: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 'rotate(180deg)' : 'rotate(0deg)',
       }}
       width="30"
       height="30"

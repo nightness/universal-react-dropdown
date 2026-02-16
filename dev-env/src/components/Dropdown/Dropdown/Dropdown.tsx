@@ -3,19 +3,11 @@ import { DEFAULT_ANIMATION_DURATION, DEFAULT_DROPDOWN_BORDER, DEFAULT_PADDING } 
 import { DefaultArrow } from '../DefaultArrow/DefaultArrow';
 import { DropdownList } from '../DropdownList/DropdownList';
 import { toScrollData } from '../helpers';
-import { Border, ComponentStyle, DropdownStyle, ArrowComponentProps } from '../types';
+import { Border, ComponentStyle, DropdownStyle, ArrowComponentProps, Placeholder } from '../types';
 import { useDropdownList } from '../DropdownList/useDropdownList';
-import { DropdownHeaderStyleResult, DropdownStyleResult, useStyles } from '../useStyles';
+import { DropdownHeaderStyleResult, DropdownStyleResult, getStyles } from '../useStyles';
 
 import './Dropdown.css';
-
-interface Placeholder {
-  text: string;
-  color?: string;
-  fontSize?: number;
-  fontWeight?: number;
-  fontFamily?: string;
-}
 
 interface DropdownProps<T> {
   items: T[];
@@ -54,11 +46,10 @@ export function Dropdown<T>({
     itemRefs,
     dropdownRef,
     listRef,
-    // closeDropdown,
-    // openDropdown,
     toggleDropdown,
     onItemClick,
-    onWheel,    
+    onKeyDown,
+    onWheel,
   } = useDropdownList<T>({
     allowNoSelection,
     disabled,
@@ -68,7 +59,7 @@ export function Dropdown<T>({
     onSelect,
   });
 
-  const { border: borderStyle, ...dropDownStyle } = useStyles({
+  const { border: borderStyle, ...dropDownStyle } = getStyles({
     name: 'dropdown',
     style: {
       width,
@@ -77,7 +68,7 @@ export function Dropdown<T>({
     },
   }) as DropdownStyleResult;
 
-  const { padding: headerPadding, ...headerStyle } = useStyles({
+  const { padding: headerPadding, ...headerStyle } = getStyles({
     name: 'dropdown-header',
     style: {
       componentStyle: componentStyle || { backgroundColor: 'transparent', color: 'black' },
@@ -87,73 +78,67 @@ export function Dropdown<T>({
 
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_ANIMATION_DURATION;
 
+  const itemStyle: React.CSSProperties = {
+    color: dropdownStyle?.color || 'black',
+    padding: `${padding}px`,
+    cursor: 'pointer',
+    ...(dropdownStyle?.separatorColor ? {
+      borderBottom: `${dropdownStyle?.separatorThickness || 1}px ${dropdownStyle?.separatorStyle || 'solid'} ${dropdownStyle?.separatorColor}`,
+    } : {}),
+  };
+
+  const itemHoverColor = dropdownStyle?.hoverColor || 'transparent';
+
   return (
-    <>
-      <div className="dropdown" ref={dropdownRef} style={dropDownStyle}>
-        <div
-          className="dropdown-header"
-          onClick={toggleDropdown}
+    <div className="dropdown" ref={dropdownRef} style={dropDownStyle}>
+      <div
+        className="dropdown-header"
+        tabIndex={disabled ? -1 : 0}
+        onClick={toggleDropdown}
+        onKeyDown={onKeyDown}
+        style={{
+          ...headerStyle,
+          padding,
+        }}
+        onWheel={onWheel}
+      >
+        <span
           style={{
-            ...headerStyle,
-            padding,
+            color: selectedItem ? componentStyle?.color : placeholder?.color || 'black',
+            fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
+            fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 900,
+            fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'Times New Roman',
+            paddingRight: `${padding}px`,
           }}
-          onWheel={onWheel}
         >
-          <span
-            onWheel={onWheel}
-            style={{
-              color: selectedItem ? componentStyle?.color : placeholder?.color || 'black',
-              fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
-              fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 900,
-              fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'Times New Roman',
-              paddingRight: `${padding}px`,
-            }}
-          >
-            {selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}
-          </span>
-          <ArrowComponent
-            color={componentStyle?.arrowColor || 'black'}
-            borderColor={componentStyle?.arrowBorderColor || 'black'}
-            visibility={visibility}
-            animationDuration={animationDuration}
-          />
-        </div>
-        <DropdownList
-          renderItem={renderItem}
-          disabled={disabled}
-          items={items}
-          selectedItem={selectedItem}
-          selectedIndex={selectedIndex}
-          allowNoSelection={allowNoSelection}
-          onItemClick={onItemClick}
+          {selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}
+        </span>
+        <ArrowComponent
+          color={componentStyle?.arrowColor || 'black'}
+          borderColor={componentStyle?.arrowBorderColor || 'black'}
           visibility={visibility}
-          dropdownStyle={dropdownStyle}
-          padding={padding}
-          borderStyle={borderStyle}
-          listRef={listRef}
-          itemRefs={itemRefs}
-          scrollData={scrollData}
-          onScroll={(e) => scrollData.current = toScrollData(e.nativeEvent.target)}
+          animationDuration={animationDuration}
         />
       </div>
-      <style>
-        {`
-          .dropdown-list li {
-            color: ${dropdownStyle?.color || 'black'};
-            padding: ${padding}px;
-            cursor: pointer;
-            ${dropdownStyle?.separatorColor
-            ? `border-bottom: ${dropdownStyle?.separatorThickness || 1}px ${dropdownStyle?.separatorStyle || 'solid'} ${dropdownStyle?.separatorColor};`
-            : ''}
-          }
-          .dropdown-list li:hover {
-            background-color: ${dropdownStyle?.hoverColor || 'transparent'} !important;
-          }
-        `}
-      </style>
-
-    </>
+      <DropdownList
+        renderItem={renderItem}
+        disabled={disabled}
+        items={items}
+        selectedItem={selectedItem}
+        selectedIndex={selectedIndex}
+        allowNoSelection={allowNoSelection}
+        onItemClick={onItemClick}
+        visibility={visibility}
+        dropdownStyle={dropdownStyle}
+        padding={padding}
+        borderStyle={borderStyle}
+        listRef={listRef}
+        itemRefs={itemRefs}
+        scrollData={scrollData}
+        itemStyle={itemStyle}
+        itemHoverColor={itemHoverColor}
+        onScroll={(e) => scrollData.current = toScrollData(e.nativeEvent.target)}
+      />
+    </div>
   );
 }
-
-
