@@ -74,6 +74,9 @@ export default function DemoPage() {
   const [arrowColor, setArrowColor] = useState("#000000");
   const [arrowBorderColor, setArrowBorderColor] = useState("#000000");
 
+  // Preview
+  const [previewBgColor, setPreviewBgColor] = useState("#1a1a2e");
+
   // Placeholder
   const [placeholderText, setPlaceholderText] = useState("Select an item");
   const [placeholderColor, setPlaceholderColor] = useState("#000000");
@@ -96,7 +99,7 @@ export default function DemoPage() {
   return (
     <Page style={{ padding: 0, height: '100%' }}>
       <div className="demo-page">
-        <div className="demo-preview">
+        <div className="demo-preview" style={{ backgroundColor: previewBgColor }}>
           <div className="demo-preview-inner" style={getPlacementStyle(hAlign, vAlign)}>
             <Dropdown
             width={width}
@@ -138,6 +141,19 @@ export default function DemoPage() {
 
         <div className="demo-controls">
           <h2>Controls</h2>
+
+          {/* Preview */}
+          <details className="demo-section" open>
+            <summary>Preview</summary>
+            <div className="demo-row">
+              <label>Background</label>
+              <input
+                type="color"
+                value={previewBgColor}
+                onChange={(e) => setPreviewBgColor(e.target.value)}
+              />
+            </div>
+          </details>
 
           {/* Placement */}
           <details className="demo-section" open>

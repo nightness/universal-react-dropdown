@@ -45,7 +45,7 @@ export function DropdownList<T>({
   disabled = false,
   onScroll,
   itemStyle = {},
-  itemHoverColor = 'transparent',
+  itemHoverColor = 'var(--urd-hover-bg)',
 }: DropdownListProps<T>) {
   const maxDropHeight = effectiveMaxHeight ?? dropdownStyle?.maxDropHeight ?? DEFAULT_MAX_DROP_HEIGHT;
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -81,12 +81,12 @@ export function DropdownList<T>({
     const isHovered = hoveredIndex === index;
     return {
       ...itemStyle,
-      color: isSelected ? dropdownStyle?.selectedColor : dropdownStyle?.color || 'black',
+      color: isSelected ? (dropdownStyle?.selectedColor || 'var(--urd-selected-color)') : (dropdownStyle?.color || 'var(--urd-list-color)'),
       backgroundColor: isHovered
         ? itemHoverColor
         : isSelected
-          ? dropdownStyle?.selectedBackgroundColor
-          : dropdownStyle?.backgroundColor,
+          ? (dropdownStyle?.selectedBackgroundColor || 'var(--urd-selected-bg)')
+          : (dropdownStyle?.backgroundColor || 'var(--urd-list-bg)'),
     };
   };
 
@@ -99,7 +99,7 @@ export function DropdownList<T>({
         borderTop: 'none',
         maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
         opacity: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 1 : 0,
-        backgroundColor: dropdownStyle?.backgroundColor,
+        backgroundColor: dropdownStyle?.backgroundColor || 'var(--urd-list-bg)',
         transition,
       }}
       onScroll={onScroll}

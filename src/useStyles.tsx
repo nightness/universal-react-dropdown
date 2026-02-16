@@ -18,6 +18,7 @@ type DropdownStyleInput = {
 
 export interface DropdownStyleResult {
   border: string;
+  borderRadius: string;
   padding: string;
   width: string;
   fontFamily: string;
@@ -44,9 +45,10 @@ export function getStyles(dStyle: DropdownStyleInput): DropdownStyleResult | Dro
           fontFamily: `${componentStyle?.fontFamily || 'Arial'}`,
           fontSize: `${componentStyle?.fontSize || 16}px`,
           fontWeight: `${componentStyle?.fontWeight || 400}`,
-          backgroundColor: `${componentStyle?.backgroundColor || 'transparent'}`,
+          backgroundColor: `${componentStyle?.backgroundColor || 'var(--urd-bg)'}`,
           padding: `${borderObject.width}px`,
           border: borderStyle,
+          borderRadius: typeof borderObject.radius === 'string' ? borderObject.radius : `${borderObject.radius || 0}px`,
         } as DropdownStyleResult;
       }
     case 'dropdown-header':
@@ -55,7 +57,7 @@ export function getStyles(dStyle: DropdownStyleInput): DropdownStyleResult | Dro
         return {
           backgroundColor: `${componentStyle.backgroundColor}`,
           padding: `${padding}px`,
-          color: `${componentStyle.color || 'black'}`,
+          color: `${componentStyle.color || 'var(--urd-color)'}`,
         } as DropdownHeaderStyleResult ;
       }
   };

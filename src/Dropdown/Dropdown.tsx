@@ -62,7 +62,7 @@ export function Dropdown<T>({
     onSelect,
   });
 
-  const { border: borderStyle, ...dropDownStyle } = getStyles({
+  const dropdownStyles = getStyles({
     name: 'dropdown',
     style: {
       width,
@@ -70,11 +70,12 @@ export function Dropdown<T>({
       border,
     },
   }) as DropdownStyleResult;
+  const { border: borderStyle, ...dropDownStyle } = dropdownStyles;
 
   const { padding: headerPadding, ...headerStyle } = getStyles({
     name: 'dropdown-header',
     style: {
-      componentStyle: componentStyle || { backgroundColor: 'transparent', color: 'black' },
+      componentStyle: componentStyle || { backgroundColor: 'var(--urd-bg)', color: 'var(--urd-color)' },
       padding,
     },
   }) as DropdownHeaderStyleResult;
@@ -82,7 +83,7 @@ export function Dropdown<T>({
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_ANIMATION_DURATION;
 
   const itemStyle: React.CSSProperties = {
-    color: dropdownStyle?.color || 'black',
+    color: dropdownStyle?.color || 'var(--urd-list-color)',
     padding: `${padding}px`,
     cursor: 'pointer',
     ...(dropdownStyle?.separatorColor ? {
@@ -90,10 +91,10 @@ export function Dropdown<T>({
     } : {}),
   };
 
-  const itemHoverColor = dropdownStyle?.hoverColor || 'transparent';
+  const itemHoverColor = dropdownStyle?.hoverColor || 'var(--urd-hover-bg)';
 
   return (
-    <div className="dropdown" ref={dropdownRef} style={dropDownStyle}>
+    <div className="dropdown" ref={dropdownRef} style={{ ...dropDownStyle, border: borderStyle, borderRadius: dropdownStyles.borderRadius }}>
       <div
         className="dropdown-header"
         tabIndex={disabled ? -1 : 0}
@@ -107,18 +108,18 @@ export function Dropdown<T>({
       >
         <span
           style={{
-            color: selectedItem ? componentStyle?.color : placeholder?.color || 'black',
+            color: selectedItem ? componentStyle?.color : placeholder?.color || 'var(--urd-placeholder-color)',
             fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
             fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 900,
-            fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'Times New Roman',
+            fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'inherit',
             paddingRight: `${padding}px`,
           }}
         >
           {selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}
         </span>
         <ArrowComponent
-          color={componentStyle?.arrowColor || 'black'}
-          borderColor={componentStyle?.arrowBorderColor || 'black'}
+          color={componentStyle?.arrowColor || 'var(--urd-arrow-color)'}
+          borderColor={componentStyle?.arrowBorderColor || 'var(--urd-arrow-border-color)'}
           visibility={visibility}
           animationDuration={animationDuration}
         />
