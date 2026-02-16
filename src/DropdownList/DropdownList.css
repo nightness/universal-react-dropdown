@@ -3,6 +3,7 @@
   margin: 0;
   padding: 0;
   overflow-y: scroll;
+  overflow-x: auto;
   z-index: 1000;
   list-style: none;
 }

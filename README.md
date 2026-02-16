@@ -14,6 +14,8 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 - **Arrow Customization**: Easily replace the default dropdown arrow with a custom component, allowing for further visual customization.
 
+- **Stable Auto-Width**: When no explicit width is set, the dropdown automatically sizes to fit the widest item, eliminating layout jitter when selections change. A configurable maximum width (default `90vw`) prevents overflow on small screens.
+
 - **Responsive Design**: Adapts well to different screen sizes and layouts, ensuring a consistent experience across devices.
 
 - **Ensures the visibility of the selected item**: If there is a selected item, and the user scrolls the selected item outside the view window before closing the dropdown (without changing selected item); when the user reopen the dropdown the select item will be scrolled to the center of the dropdown's view window.
@@ -196,10 +198,15 @@ import type { TriggerRenderProps } from 'universal-react-dropdown';
 />
 ```
 
-### `width` (recommended)
+### `width`
 - **Type**: `number | string`
-- **Description**: The width of the dropdown component. Specifying a width is recommended, without one the width will only be as wide as your widest element.
+- **Description**: The width of the dropdown component. When omitted (or set to `'auto'`), the dropdown auto-sizes to the widest item so the trigger never resizes on selection change. The auto-sized width is capped by `maxAutoWidth`.
 - **Default**: `'auto'`
+
+### `maxAutoWidth`
+- **Type**: `number | string`
+- **Description**: Maximum width of the dropdown when auto-sizing (i.e. when `width` is not explicitly set). Pass a number for pixels or a CSS string such as `'90vw'` or `'500px'`. When the widest item exceeds this cap, the dropdown list allows horizontal scrolling. Ignored when an explicit `width` is provided.
+- **Default**: `'90vw'`
 
 ### `padding`
 - **Type**: `number`

@@ -3,6 +3,7 @@
 .dropdown {
   position: relative;
   cursor: default;
+  box-sizing: border-box;
 }
 
 .dropdown-header {

@@ -1,5 +1,5 @@
-import React, { useId } from 'react';
-import { DEFAULT_ANIMATION_DURATION, DEFAULT_DROPDOWN_BORDER, DEFAULT_PADDING } from '../constants';
+import React, { useId, useMemo } from 'react';
+import { DEFAULT_ANIMATION_DURATION, DEFAULT_ARROW_WIDTH, DEFAULT_DROPDOWN_BORDER, DEFAULT_MAX_AUTO_WIDTH, DEFAULT_PADDING } from '../constants';
 import { DefaultArrow } from '../DefaultArrow/DefaultArrow';
 import { DropdownList } from '../DropdownList/DropdownList';
 import { themeToCustomProperties, toBorder, toScrollData } from '../helpers';
@@ -26,6 +26,7 @@ interface DropdownProps<T> {
   disabled?: boolean;
   allowNoSelection?: boolean;
   renderTrigger?: (props: TriggerRenderProps<T>) => React.ReactNode;
+  maxAutoWidth?: number | string;
   selectedIndex?: number;
   defaultIndex?: number;
   ariaLabel?: string;
@@ -49,6 +50,7 @@ export function Dropdown<T>({
   disabled = false,
   allowNoSelection = false,
   renderTrigger,
+  maxAutoWidth = DEFAULT_MAX_AUTO_WIDTH,
   selectedIndex: controlledIndex,
   defaultIndex,
   ariaLabel,
@@ -115,6 +117,37 @@ export function Dropdown<T>({
 
   const itemHoverColor = dropdownStyle?.hoverColor || 'var(--urd-hover-bg)';
 
+  const autoSize = width === 'auto';
+  const arrowPad = !renderTrigger ? DEFAULT_ARROW_WIDTH + padding : 0;
+
+  const sizerContent = useMemo(() => {
+    if (!autoSize) return null;
+    const sizerItemStyle: React.CSSProperties = {
+      padding: `${padding}px`,
+      paddingRight: `${padding + arrowPad}px`,
+      whiteSpace: 'nowrap',
+    };
+    const sizerPlaceholderStyle: React.CSSProperties = {
+      ...sizerItemStyle,
+      fontWeight: placeholder?.fontWeight || 900,
+      fontSize: placeholder?.fontSize || 16,
+      fontFamily: placeholder?.fontFamily || 'inherit',
+    };
+    return (
+      <div style={{ height: 0, overflow: 'hidden', pointerEvents: 'none', margin: 0, padding: 0 }} aria-hidden="true">
+        {allowNoSelection && (
+          <div key="none" style={sizerItemStyle}>{renderItem(null, -1, false)}</div>
+        )}
+        {items.map((item, index) => (
+          <div key={index} style={sizerItemStyle}>{renderItem(item, index, false)}</div>
+        ))}
+        {placeholder?.text && (
+          <div style={sizerPlaceholderStyle}>{placeholder.text}</div>
+        )}
+      </div>
+    );
+  }, [autoSize, items, renderItem, padding, arrowPad, allowNoSelection, placeholder]);
+
   const isOpen = visibility === 'Opening' || visibility === 'Open';
   const direction = effectiveDirection ?? dropdownStyle?.dropdownDirection ?? 'down';
   const borderWidth = toBorder(border).width;
@@ -134,7 +167,9 @@ export function Dropdown<T>({
       borderTop: isOpen && direction === 'up' ? `${borderWidth}px solid transparent` : borderStyle,
       borderRadius: containerRadius,
       transition: 'border-color 0s',
+      ...(autoSize ? { maxWidth: typeof maxAutoWidth === 'number' ? `${maxAutoWidth}px` : maxAutoWidth } : {}),
     }}>
+      {sizerContent}
       <div
         className="dropdown-header"
         role="combobox"
