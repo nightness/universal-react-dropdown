@@ -16,7 +16,13 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint 'src/**/*.{ts,tsx}'"
   },
-  "keywords": ["react", "dropdown", "component", "select", "typescript"],
+  "keywords": [
+    "react",
+    "dropdown",
+    "component",
+    "select",
+    "typescript"
+  ],
   "author": "nightness",
   "company": "Brainwires",
   "license": "MIT",
