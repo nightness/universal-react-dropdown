@@ -24,6 +24,10 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 - **Viewport-Aware Auto-Flip**: Dropdown automatically flips direction when near viewport edges, ensuring the list is always visible regardless of scroll position.
 
+- **ARIA Accessible**: Semantic `combobox`/`listbox` roles and ARIA attributes (`aria-expanded`, `aria-activedescendant`, `aria-selected`, etc.) are applied automatically. Unique IDs via `React.useId()` support multiple instances on the same page.
+
+- **Controlled & Uncontrolled Modes**: Use `selectedIndex` for fully controlled selection, `defaultIndex` for an initial value in uncontrolled mode, or neither for default behavior.
+
 - **Keyboard Navigation**: Full keyboard accessibility including Tab, Enter, Space, Escape, Arrow keys, PageUp/PageDown, and Home/End for navigating and selecting items.
 
 - **Item Hover and Selection Styles**: Define custom hover and selection styles for dropdown items, enhancing visual feedback during user interactions.
@@ -328,6 +332,30 @@ const oceanTheme: DropdownTheme = {
   placeholder={{ text: 'Pick one' }}
 />
 ```
+
+### `selectedIndex`
+- **Type**: `number`
+- **Description**: Controlled mode — the parent owns the selected index. When provided, the dropdown reflects this value as the current selection. Use together with `onSelect` to update the value.
+
+### `defaultIndex`
+- **Type**: `number`
+- **Description**: Uncontrolled mode with an initial value. Sets the initially selected index without requiring the parent to manage state afterward.
+
+### `onOpen`
+- **Type**: `() => void`
+- **Description**: Callback fired when the dropdown begins opening (at the start of the open animation).
+
+### `onClose`
+- **Type**: `() => void`
+- **Description**: Callback fired when the dropdown finishes closing (after the close animation completes).
+
+### `ariaLabel`
+- **Type**: `string`
+- **Description**: Sets the `aria-label` attribute on the dropdown trigger for screen readers. Use when there is no visible label element.
+
+### `ariaLabelledBy`
+- **Type**: `string`
+- **Description**: Sets the `aria-labelledby` attribute on the dropdown trigger. Use when a visible label element exists and you want to reference its `id`.
 
 ### `disabled`
 - **Type**: `boolean`

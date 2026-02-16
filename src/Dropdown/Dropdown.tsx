@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import { DEFAULT_ANIMATION_DURATION, DEFAULT_DROPDOWN_BORDER, DEFAULT_PADDING } from '../constants';
 import { DefaultArrow } from '../DefaultArrow/DefaultArrow';
 import { DropdownList } from '../DropdownList/DropdownList';
@@ -16,6 +16,8 @@ interface DropdownProps<T> {
   width?: number | string;
   padding?: number;
   onSelect?: (item: T | null, index: number) => void;
+  onOpen?: () => void;
+  onClose?: () => void;
   border?: Border | string;
   placeholder?: Placeholder;
   componentStyle?: ComponentStyle;
@@ -24,6 +26,10 @@ interface DropdownProps<T> {
   disabled?: boolean;
   allowNoSelection?: boolean;
   renderTrigger?: (props: TriggerRenderProps<T>) => React.ReactNode;
+  selectedIndex?: number;
+  defaultIndex?: number;
+  ariaLabel?: string;
+  ariaLabelledBy?: string;
 }
 
 export function Dropdown<T>({
@@ -31,6 +37,8 @@ export function Dropdown<T>({
   items,
   renderItem,
   onSelect,
+  onOpen,
+  onClose,
   width = 'auto',
   padding = DEFAULT_PADDING,
   placeholder,
@@ -41,7 +49,12 @@ export function Dropdown<T>({
   disabled = false,
   allowNoSelection = false,
   renderTrigger,
+  selectedIndex: controlledIndex,
+  defaultIndex,
+  ariaLabel,
+  ariaLabelledBy,
 }: DropdownProps<T>) {
+  const urdId = useId();
   const themeVars = themeToCustomProperties(theme);
   const {
     visibility,
@@ -65,6 +78,10 @@ export function Dropdown<T>({
     dropdownDirection: dropdownStyle?.dropdownDirection,
     items,
     onSelect,
+    onOpen,
+    onClose,
+    controlledIndex,
+    defaultIndex,
   });
 
   const dropdownStyles = getStyles({
@@ -113,12 +130,21 @@ export function Dropdown<T>({
       ...themeVars,
       ...dropDownStyle,
       border: borderStyle,
+      borderBottom: isOpen && direction === 'down' ? `${borderWidth}px solid transparent` : borderStyle,
+      borderTop: isOpen && direction === 'up' ? `${borderWidth}px solid transparent` : borderStyle,
       borderRadius: containerRadius,
-      ...(isOpen && direction === 'down' ? { borderBottom: 'none' } : {}),
-      ...(isOpen && direction === 'up' ? { borderTop: 'none' } : {}),
+      transition: 'border-color 0s',
     }}>
       <div
         className="dropdown-header"
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="listbox"
+        aria-controls={`${urdId}-listbox`}
+        aria-activedescendant={selectedIndex >= 0 ? `${urdId}-option-${selectedIndex}` : undefined}
+        aria-disabled={disabled || undefined}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         tabIndex={disabled ? -1 : 0}
         onClick={toggleDropdown}
         onKeyDown={onKeyDown}
@@ -170,6 +196,7 @@ export function Dropdown<T>({
         itemStyle={itemStyle}
         itemHoverColor={itemHoverColor}
         borderWidth={borderWidth}
+        idPrefix={urdId}
         onScroll={(e) => scrollData.current = toScrollData(e.nativeEvent.target)}
       />
     </div>

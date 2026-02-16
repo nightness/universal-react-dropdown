@@ -25,6 +25,7 @@ interface DropdownListProps<T> {
   itemStyle?: React.CSSProperties;
   itemHoverColor?: string;
   borderWidth?: number;
+  idPrefix?: string;
 }
 
 export function DropdownList<T>({
@@ -48,6 +49,7 @@ export function DropdownList<T>({
   itemStyle = {},
   itemHoverColor = 'var(--urd-hover-bg)',
   borderWidth = 0,
+  idPrefix,
 }: DropdownListProps<T>) {
   const maxDropHeight = effectiveMaxHeight ?? dropdownStyle?.maxDropHeight ?? DEFAULT_MAX_DROP_HEIGHT;
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -75,6 +77,7 @@ export function DropdownList<T>({
     }
   }, [selectedIndex]);
 
+  const isListVisible = visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening || visibility === DropdownVisibility.Closing;
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_ANIMATION_DURATION;
   const transition = `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`;
   const direction = effectiveDirection ?? dropdownStyle?.dropdownDirection ?? 'down';
@@ -96,6 +99,8 @@ export function DropdownList<T>({
   return (
     <ul
       ref={listRef}
+      id={idPrefix ? `${idPrefix}-listbox` : undefined}
+      role="listbox"
       className="dropdown-list"
       style={{
         left: -borderWidth,
@@ -103,10 +108,14 @@ export function DropdownList<T>({
         ...(direction === 'down'
           ? { top: '100%', bottom: 'auto' }
           : { bottom: '100%', top: 'auto' }),
-        border: borderStyle,
-        ...(direction === 'down'
+        border: isListVisible ? borderStyle : 'none',
+        ...(isListVisible && direction === 'down'
           ? { borderTop: 'none' }
-          : { borderBottom: 'none' }),
+          : {}),
+        ...(isListVisible && direction === 'up'
+          ? { borderBottom: 'none' }
+          : {}),
+        visibility: isListVisible ? 'visible' : 'hidden',
         maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
         opacity: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 1 : 0,
         backgroundColor: dropdownStyle?.backgroundColor || 'var(--urd-list-bg)',
@@ -116,6 +125,9 @@ export function DropdownList<T>({
     >
       {allowNoSelection && (
         <li
+          id={idPrefix ? `${idPrefix}-option-none` : undefined}
+          role="option"
+          aria-selected={selectedIndex === -1}
           onClick={() => onItemClick(null, -1)}
           onMouseEnter={() => setHoveredIndex(-1)}
           onMouseLeave={() => setHoveredIndex(null)}
@@ -127,6 +139,9 @@ export function DropdownList<T>({
       {items.map((item, index) => (
         <li
           key={index}
+          id={idPrefix ? `${idPrefix}-option-${index}` : undefined}
+          role="option"
+          aria-selected={selectedIndex === index}
           ref={(el) => { if (itemRefs.current) itemRefs.current[index] = el; }}
           onClick={() => !disabled && onItemClick(item, index)}
           onMouseEnter={() => setHoveredIndex(index)}

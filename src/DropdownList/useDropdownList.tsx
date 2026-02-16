@@ -5,25 +5,51 @@ import { DEFAULT_MAX_DROP_HEIGHT, DEFAULT_ANIMATION_DURATION } from '../constant
 interface UseDropdownProps<T> {
   items: T[];
   onSelect?: (item: T | null, index: number) => void;
+  onOpen?: () => void;
+  onClose?: () => void;
   maxDropHeight?: number;
   animationDuration?: number;
   disabled?: boolean;
   allowNoSelection?: boolean;
   dropdownDirection?: 'up' | 'down';
+  controlledIndex?: number;
+  defaultIndex?: number;
 }
 
 export function useDropdownList<T>({
   items,
   onSelect,
+  onOpen,
+  onClose,
   maxDropHeight = DEFAULT_MAX_DROP_HEIGHT,
   animationDuration = DEFAULT_ANIMATION_DURATION,
   disabled = false,
   allowNoSelection = false,
   dropdownDirection = 'down',
+  controlledIndex,
+  defaultIndex,
 }: UseDropdownProps<T>) {
   const [visibility, setVisibility] = useState<DropdownVisibilityType>(DropdownVisibility.Closed);
-  const [selectedIndex, setSelectedIndex] = useState<number>(-1);
-  const [selectedItem, setSelectedItem] = useState<T | null>(null);
+  const [internalIndex, setInternalIndex] = useState<number>(defaultIndex ?? -1);
+  const [internalItem, setInternalItem] = useState<T | null>(
+    defaultIndex != null && defaultIndex >= 0 ? items[defaultIndex] : null
+  );
+
+  const isControlled = controlledIndex !== undefined;
+  const selectedIndex = isControlled ? controlledIndex : internalIndex;
+  const selectedItem = isControlled ? (controlledIndex >= 0 ? items[controlledIndex] : null) : internalItem;
+
+  // Sync internal state when controlled index changes
+  useEffect(() => {
+    if (isControlled) {
+      setInternalIndex(controlledIndex);
+      setInternalItem(controlledIndex >= 0 ? items[controlledIndex] : null);
+    }
+  }, [controlledIndex]);
+
+  // Alias for backward compatibility within the hook
+  const setSelectedIndex = setInternalIndex;
+  const setSelectedItem = setInternalItem;
   const [effectiveMaxHeight, setEffectiveMaxHeight] = useState(maxDropHeight);
   const [effectiveDirection, setEffectiveDirection] = useState(dropdownDirection);
   const scrollData = useRef<ScrollData | null>(null) as React.MutableRefObject<ScrollData | null>;
@@ -99,9 +125,10 @@ export function useDropdownList<T>({
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
     animationTimeout.current = setTimeout(() => {
       setVisibility(DropdownVisibility.Closed);
+      onClose?.();
       callback();
     }, animationDuration);
-  }, [animationDuration]);
+  }, [animationDuration, onClose]);
 
   // Keep the ref in sync so the click-outside handler always uses the latest version
   closeDropdownRef.current = closeDropdown;
@@ -114,6 +141,7 @@ export function useDropdownList<T>({
     setEffectiveDirection(layout.direction);
     ensureVisible(layout.maxHeight);
     setVisibility(DropdownVisibility.Opening);
+    onOpen?.();
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
     animationTimeout.current = setTimeout(() => {
       setVisibility(DropdownVisibility.Open);
