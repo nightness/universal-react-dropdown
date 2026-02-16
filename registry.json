@@ -1,0 +1,28 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "universal-react-dropdown",
+  "homepage": "https://github.com/nightness/universal-react-dropdown",
+  "items": [
+    {
+      "name": "dropdown",
+      "type": "registry:block",
+      "title": "Universal React Dropdown",
+      "description": "A customizable, generic React Dropdown component with keyboard navigation, auto-flip positioning, animations, and full accessibility support.",
+      "author": "nightness",
+      "dependencies": ["react", "react-dom"],
+      "files": [
+        { "path": "src/index.ts", "type": "registry:component", "target": "components/universal-dropdown/index.ts" },
+        { "path": "src/types.ts", "type": "registry:lib", "target": "components/universal-dropdown/types.ts" },
+        { "path": "src/constants.ts", "type": "registry:lib", "target": "components/universal-dropdown/constants.ts" },
+        { "path": "src/helpers.ts", "type": "registry:lib", "target": "components/universal-dropdown/helpers.ts" },
+        { "path": "src/useStyles.tsx", "type": "registry:hook", "target": "components/universal-dropdown/useStyles.tsx" },
+        { "path": "src/DefaultArrow/DefaultArrow.tsx", "type": "registry:component", "target": "components/universal-dropdown/DefaultArrow/DefaultArrow.tsx" },
+        { "path": "src/Dropdown/Dropdown.tsx", "type": "registry:component", "target": "components/universal-dropdown/Dropdown/Dropdown.tsx" },
+        { "path": "src/Dropdown/Dropdown.css", "type": "registry:file", "target": "components/universal-dropdown/Dropdown/Dropdown.css" },
+        { "path": "src/DropdownList/DropdownList.tsx", "type": "registry:component", "target": "components/universal-dropdown/DropdownList/DropdownList.tsx" },
+        { "path": "src/DropdownList/useDropdownList.tsx", "type": "registry:hook", "target": "components/universal-dropdown/DropdownList/useDropdownList.tsx" },
+        { "path": "src/DropdownList/DropdownList.css", "type": "registry:file", "target": "components/universal-dropdown/DropdownList/DropdownList.css" }
+      ]
+    }
+  ]
+}

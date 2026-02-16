@@ -14,7 +14,8 @@
     "build": "tsc && npm run copy-css",
     "copy-css": "rsync -a --prune-empty-dirs --include '*/' --include '*.css' --exclude '*' src/ dist/",
     "prepublishOnly": "npm run build",
-    "lint": "eslint 'src/**/*.{ts,tsx}'"
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "registry:build": "shadcn build"
   },
   "keywords": [
     "react",
@@ -42,6 +43,7 @@
     "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-import": "^2.25.2",
     "eslint-plugin-react": "^7.35.0",
+    "shadcn": "^3.8.5",
     "typescript": "^5.5.4"
   }
 }

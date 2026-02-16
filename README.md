@@ -36,10 +36,36 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 ## Installation
 
-You can install the package via npm:
+### Via npm
 
 ```bash
 npm install universal-react-dropdown
+```
+
+### Via shadcn CLI
+
+Copy the component source directly into your project:
+
+```bash
+npx shadcn@latest add https://raw.githubusercontent.com/nightness/universal-react-dropdown/main/public/r/dropdown.json
+```
+
+Or add as a namespaced registry in your `components.json`:
+
+```json
+{
+  "registries": {
+    "@nightness": {
+      "url": "https://raw.githubusercontent.com/nightness/universal-react-dropdown/main/public/r"
+    }
+  }
+}
+```
+
+Then install with:
+
+```bash
+npx shadcn add @nightness/dropdown
 ```
 
 ## Usage
