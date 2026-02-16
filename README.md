@@ -20,7 +20,11 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 - **Conditional Placeholder**: Placeholder text can be customized with different colors, font sizes, and styles, appearing only when no item is selected.
 
-- **Configurable Dropdown Direction**: Choose whether the dropdown list appears above or below the trigger element, making it versatile for various UI designs. 
+- **Configurable Dropdown Direction**: Choose whether the dropdown list appears above or below the trigger element, making it versatile for various UI designs.
+
+- **Viewport-Aware Auto-Flip**: Dropdown automatically flips direction when near viewport edges, ensuring the list is always visible regardless of scroll position.
+
+- **Keyboard Navigation**: Full keyboard accessibility including Tab, Enter, Space, Escape, Arrow keys, PageUp/PageDown, and Home/End for navigating and selecting items.
 
 - **Item Hover and Selection Styles**: Define custom hover and selection styles for dropdown items, enhancing visual feedback during user interactions.
 
@@ -29,8 +33,6 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 ## Future Feature List
 
 - **Border Radius Support**
-
-- **Keyboard Navigation**: Full keyboard accessibility, allowing users to navigate and select items using the keyboard; keyboard up and down arrow keys.
 
 ## Installation
 

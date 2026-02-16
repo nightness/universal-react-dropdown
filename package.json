@@ -1,7 +1,8 @@
 {
   "name": "universal-react-dropdown",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/nightness/universal-react-dropdown"
@@ -15,14 +16,14 @@
     "publish": "npm run build && npm publish --access public",
     "lint": "eslint 'src/**/*.{ts,tsx}'"
   },
-  "keywords": [],
+  "keywords": ["react", "dropdown", "component", "select", "typescript"],
   "author": "nightness",
   "company": "Brainwires",
   "license": "MIT",
-  "description": "",
-  "dependencies": {
-    "react": "^18.*",
-    "react-dom": "^18.*"
+  "description": "A customizable React Dropdown component designed for flexible integration into React applications.",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.14.6",
