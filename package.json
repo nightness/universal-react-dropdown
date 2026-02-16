@@ -13,7 +13,7 @@
   "scripts": {
     "build": "tsc && npm run copy-css",
     "copy-css": "rsync -a --prune-empty-dirs --include '*/' --include '*.css' --exclude '*' dev-env/src/components/Dropdown/ dist/",
-    "publish": "npm run build && npm publish --access public",
+    "prepublishOnly": "npm run build",
     "lint": "eslint 'src/**/*.{ts,tsx}'"
   },
   "keywords": ["react", "dropdown", "component", "select", "typescript"],
