@@ -98,6 +98,14 @@ export interface DropdownTheme {
   focusRingOffset?: string;        // --urd-focus-ring-offset
 }
 
+export interface TriggerRenderProps<T> {
+  selectedItem: T | null;
+  selectedIndex: number;
+  visibility: DropdownVisibilityType;
+  isOpen: boolean;
+  disabled: boolean;
+}
+
 export interface Size {
   width: number;
   height: number;

@@ -162,6 +162,36 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
 - **Type**: `(item: T | null, index: number, isSelected: boolean) => React.ReactNode`
 - **Description**: A function to render each item in the dropdown. Receives the item (or `null` when deselected), its index in the `items` array, and whether it is currently selected.
 
+### `renderTrigger`
+- **Type**: `(props: TriggerRenderProps<T>) => React.ReactNode`
+- **Description**: Replaces the default trigger content (selected-item span + arrow) inside the header. The outer `.dropdown-header` div — including its click, keyboard, wheel handlers, and `tabIndex` — is preserved; only the inner content changes.
+
+#### `TriggerRenderProps<T>` Object
+- **Properties**:
+  - `selectedItem`: `T | null` — The currently selected item, or `null` if nothing is selected.
+  - `selectedIndex`: `number` — Index of the selected item in the `items` array (`-1` when nothing is selected).
+  - `visibility`: `DropdownVisibilityType` — Current animation state (`'Opening'`, `'Open'`, `'Closing'`, `'Closed'`).
+  - `isOpen`: `boolean` — `true` when the dropdown is opening or open.
+  - `disabled`: `boolean` — Whether the dropdown is disabled.
+
+#### Example
+
+```tsx
+import { Dropdown } from 'universal-react-dropdown';
+import type { TriggerRenderProps } from 'universal-react-dropdown';
+
+<Dropdown
+  items={items}
+  renderItem={renderItem}
+  renderTrigger={({ selectedItem, isOpen }: TriggerRenderProps<Item>) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span>{selectedItem ? selectedItem.name : 'Choose…'}</span>
+      <span style={{ transform: isOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+    </div>
+  )}
+/>
+```
+
 ### `width` (recommended)
 - **Type**: `number | string`
 - **Description**: The width of the dropdown component. Specifying a width is recommended, without one the width will only be as wide as your widest element.

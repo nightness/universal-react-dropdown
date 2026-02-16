@@ -3,7 +3,7 @@ import { DEFAULT_ANIMATION_DURATION, DEFAULT_DROPDOWN_BORDER, DEFAULT_PADDING } 
 import { DefaultArrow } from '../DefaultArrow/DefaultArrow';
 import { DropdownList } from '../DropdownList/DropdownList';
 import { themeToCustomProperties, toBorder, toScrollData } from '../helpers';
-import { Border, ComponentStyle, DropdownStyle, DropdownTheme, ArrowComponentProps, Placeholder } from '../types';
+import { Border, ComponentStyle, DropdownStyle, DropdownTheme, ArrowComponentProps, Placeholder, TriggerRenderProps } from '../types';
 import { useDropdownList } from '../DropdownList/useDropdownList';
 import { DropdownHeaderStyleResult, DropdownStyleResult, getStyles } from '../useStyles';
 
@@ -23,6 +23,7 @@ interface DropdownProps<T> {
   theme?: DropdownTheme;
   disabled?: boolean;
   allowNoSelection?: boolean;
+  renderTrigger?: (props: TriggerRenderProps<T>) => React.ReactNode;
 }
 
 export function Dropdown<T>({
@@ -39,6 +40,7 @@ export function Dropdown<T>({
   border = DEFAULT_DROPDOWN_BORDER,
   disabled = false,
   allowNoSelection = false,
+  renderTrigger,
 }: DropdownProps<T>) {
   const themeVars = themeToCustomProperties(theme);
   const {
@@ -126,23 +128,27 @@ export function Dropdown<T>({
         }}
         onWheel={onWheel}
       >
-        <span
-          style={{
-            color: selectedItem ? componentStyle?.color : placeholder?.color || 'var(--urd-placeholder-color)',
-            fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
-            fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 900,
-            fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'inherit',
-            paddingRight: `${padding}px`,
-          }}
-        >
-          {selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}
-        </span>
-        <ArrowComponent
-          color={componentStyle?.arrowColor || 'var(--urd-arrow-color)'}
-          borderColor={componentStyle?.arrowBorderColor || 'var(--urd-arrow-border-color)'}
-          visibility={visibility}
-          animationDuration={animationDuration}
-        />
+        {renderTrigger ? renderTrigger({ selectedItem, selectedIndex, visibility, isOpen, disabled }) : (
+          <>
+            <span
+              style={{
+                color: selectedItem ? componentStyle?.color : placeholder?.color || 'var(--urd-placeholder-color)',
+                fontSize: selectedItem ? componentStyle?.fontSize : placeholder?.fontSize || 16,
+                fontWeight: selectedItem ? componentStyle?.fontWeight : placeholder?.fontWeight || 900,
+                fontFamily: selectedItem ? componentStyle?.fontFamily : placeholder?.fontFamily || 'inherit',
+                paddingRight: `${padding}px`,
+              }}
+            >
+              {selectedItem ? renderItem(selectedItem, selectedIndex, false) : placeholder?.text}
+            </span>
+            <ArrowComponent
+              color={componentStyle?.arrowColor || 'var(--urd-arrow-color)'}
+              borderColor={componentStyle?.arrowBorderColor || 'var(--urd-arrow-border-color)'}
+              visibility={visibility}
+              animationDuration={animationDuration}
+            />
+          </>
+        )}
       </div>
       <DropdownList
         renderItem={renderItem}
