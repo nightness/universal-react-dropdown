@@ -4,7 +4,7 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 ## Key Features
 
-- **React 18.x Compatibility**: The only dependency is React 18.x, ensuring seamless integration with your existing React project.
+- **React 18 & 19 Compatibility**: Works with React 18.x and React 19.x, ensuring seamless integration with your existing React project.
 
 - **Fully Customizable**: Offers extensive customization options for styling, behavior, and layout to match your application's design needs.
 
@@ -30,9 +30,7 @@ universal-react-dropdown is a customizable React Dropdown component designed for
 
 - **Support for Disabled State**: Easily disable the dropdown to prevent user interaction when necessary, maintaining control over the user interface.
 
-## Future Feature List
-
-- **Border Radius Support**
+- **Theme Support**: Apply a complete color theme via a single `theme` prop. Themes set scoped CSS custom properties on the container, so multiple dropdowns on the same page can each have their own theme.
 
 ## Installation
 
@@ -126,8 +124,8 @@ The Dropdown component accepts the following props:
 - **Description**: An array of items to display in the dropdown.
 
 ### `ArrowComponent`
-- **Type**: `React.FC<{ color: string, borderColor?: string, visibility: DropdownVisibility }>`
-- **Description**: A custom component to render the dropdown arrow. It receives `color` and `borderColor` as props.
+- **Type**: `React.FC<ArrowComponentProps>`
+- **Description**: A custom component to render the dropdown arrow. It receives `color`, `borderColor`, `visibility`, and `animationDuration` as props.
 - **Default**: `DefaultArrow` component provided by the package.
 - **Example**:
 ```tsx
@@ -161,8 +159,8 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
 ```
 
 ### `renderItem` (required)
-- **Type**: `(item: T | null) => React.ReactNode`
-- **Description**: A function to render each item in the dropdown. This allows for custom item rendering logic.
+- **Type**: `(item: T | null, index: number, isSelected: boolean) => React.ReactNode`
+- **Description**: A function to render each item in the dropdown. Receives the item (or `null` when deselected), its index in the `items` array, and whether it is currently selected.
 
 ### `width` (recommended)
 - **Type**: `number | string`
@@ -175,13 +173,13 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
 - **Default**: `10`
 
 ### `onSelect`
-- **Type**: `(item: T | null) => void`
-- **Description**: Callback that informs the parent after an item is selected. Animations finish before this is called.
+- **Type**: `(item: T | null, index: number) => void`
+- **Description**: Callback that informs the parent after an item is selected. Receives the selected item (or `null` if deselected) and its index. Animations finish before this is called.
 
 ### `border`
 - **Type**: `Border | string`
 - **Description**: Defines the border style for the dropdown. Can be a string or an object specifying `color`, `width`, `style`, and `radius`.
-- **Default**: `{ color: 'transparent', width: 0, style: 'none', radius: 0 }`
+- **Default**: `{ color: 'var(--urd-border-color)', width: 1, style: 'solid', radius: 4 }`
 
 #### `Border` Object
 - **Properties**:
@@ -212,7 +210,7 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
   - `backgroundColor`: `string` - Background color of the component.
   - `color`: `string` - Text color of the component.
   - `fontSize`: `number` - Font size of the component text.
-  - `fontWeight`: `number` - Font weight of the component text.
+  - `fontWeight`: `number | "normal" | "bold" | "bolder" | "lighter"` - Font weight of the component text.
   - `fontFamily`: `string` - Font family of the component text.
   - `cursor`: `string` - Cursor style when hovering over the component.
   - `arrowColor`: `string` - Color of the dropdown arrow.
@@ -229,13 +227,77 @@ function ArrowComponent({ visibility, color, borderColor, animationDuration }: A
   - `backgroundColor`: `string` - Background color of the dropdown list.
   - `color`: `string` - Text color of the dropdown list items.
   - `fontSize`: `number` - Font size of the dropdown list items.
-  - `fontWeight`: `number` - Font weight of the dropdown list items.
+  - `fontWeight`: `number | "normal" | "bold" | "bolder" | "lighter"` - Font weight of the dropdown list items.
   - `fontFamily`: `string` - Font family of the dropdown list items.
+  - `cursor`: `string` - Cursor style when hovering over list items.
   - `hoverColor`: `string` - Background color of items when hovered.
-  - `maxDropHeight`: `number` - Maximum height of the dropdown list when open, useful for limiting the visible area and enabling scrolling. Default: `'60vh'`
-  - `selectedColor`: `string` - Selected text color
-  - `selectedBackgroundColor`: `string` - Selected background color
+  - `animationDuration`: `number` - Duration of the open/close animation in milliseconds. Default: `300`
+  - `maxDropHeight`: `number` - Maximum height of the dropdown list in pixels when open, useful for limiting the visible area and enabling scrolling. Default: `225`
+  - `selectedColor`: `string` - Selected text color.
+  - `selectedBackgroundColor`: `string` - Selected background color.
   - `separatorColor`: `string` - Color of the separator between items.
+  - `separatorThickness`: `number` - Thickness of the separator in pixels. Default: `1`
+  - `separatorStyle`: `'solid' | 'dotted' | 'dashed'` - Style of the separator line. Default: `'solid'`
+
+### `theme`
+- **Type**: `DropdownTheme`
+- **Description**: Applies a color theme to the dropdown by setting scoped `--urd-*` CSS custom properties on the container element. Each dropdown instance can have its own theme. All fields are optional — only the properties you set will be overridden.
+
+#### `DropdownTheme` Object
+- **Properties**:
+  - `backgroundColor`: `string` — Header background (`--urd-bg`)
+  - `color`: `string` — Header text color (`--urd-color`)
+  - `borderColor`: `string` — Border color (`--urd-border-color`)
+  - `arrowColor`: `string` — Arrow fill color (`--urd-arrow-color`)
+  - `arrowBorderColor`: `string` — Arrow border color (`--urd-arrow-border-color`)
+  - `placeholderColor`: `string` — Placeholder text color (`--urd-placeholder-color`)
+  - `listBackgroundColor`: `string` — List background (`--urd-list-bg`)
+  - `listColor`: `string` — List text color (`--urd-list-color`)
+  - `hoverBackgroundColor`: `string` — Item hover background (`--urd-hover-bg`)
+  - `selectedBackgroundColor`: `string` — Selected item background (`--urd-selected-bg`)
+  - `selectedColor`: `string` — Selected item text color (`--urd-selected-color`)
+  - `separatorColor`: `string` — Item separator color (`--urd-separator-color`)
+  - `focusRingColor`: `string` — Focus ring color (`--urd-focus-ring-color`)
+  - `focusRingOffset`: `string` — Focus ring offset color (`--urd-focus-ring-offset`)
+
+#### Style Priority
+
+Styles are applied in the following order (each overrides the previous):
+
+1. **CSS variables** — Light/dark defaults from `theme.css` on `:root`
+2. **`theme` prop** — Sets `--urd-*` custom properties scoped to the instance
+3. **Individual props** — `componentStyle`, `dropdownStyle`, `border`, etc. always win
+
+#### Example
+
+```tsx
+import { Dropdown } from 'universal-react-dropdown';
+import type { DropdownTheme } from 'universal-react-dropdown';
+
+const oceanTheme: DropdownTheme = {
+  backgroundColor: '#0a1628',
+  color: '#b8d4e3',
+  borderColor: '#1e3a5f',
+  arrowColor: '#4a9ece',
+  arrowBorderColor: '#4a9ece',
+  placeholderColor: '#5a8aaa',
+  listBackgroundColor: '#0d1f3c',
+  listColor: '#b8d4e3',
+  hoverBackgroundColor: '#1a3355',
+  selectedBackgroundColor: '#1e4d7b',
+  selectedColor: '#e0f0ff',
+  separatorColor: '#1a3050',
+  focusRingColor: '#4a9ece',
+  focusRingOffset: '#0a1628',
+};
+
+<Dropdown
+  items={items}
+  renderItem={renderItem}
+  theme={oceanTheme}
+  placeholder={{ text: 'Pick one' }}
+/>
+```
 
 ### `disabled`
 - **Type**: `boolean`

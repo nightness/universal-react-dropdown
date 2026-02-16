@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Page } from "@components/index";
 import { Dropdown } from "universal-react-dropdown";
+import type { DropdownTheme } from "universal-react-dropdown";
+import { presetThemes } from "../../themes";
 import "./DemoPage.css";
 
 interface Item {
@@ -67,6 +69,7 @@ export default function DemoPage() {
   const [borderColor, setBorderColor] = useState("#008000");
   const [borderWidth, setBorderWidth] = useState(3);
   const [borderStyle, setBorderStyle] = useState("solid");
+  const [borderRadius, setBorderRadius] = useState(5);
 
   // Component Style
   const [bgColor, setBgColor] = useState("#d3d3d3");
@@ -96,6 +99,32 @@ export default function DemoPage() {
   const [separatorThickness, setSeparatorThickness] = useState(2);
   const [separatorStyle, setSeparatorStyle] = useState<"solid" | "dotted" | "dashed">("dotted");
 
+  // Theme
+  const [selectedPreset, setSelectedPreset] = useState(0);
+  const [useCustomTheme, setUseCustomTheme] = useState(false);
+  const [customTheme, setCustomTheme] = useState<DropdownTheme>({
+    backgroundColor: "#2a2a2a",
+    color: "#e0e0e0",
+    borderColor: "#4a4a4a",
+    arrowColor: "#b0b0b0",
+    arrowBorderColor: "#b0b0b0",
+    placeholderColor: "#999999",
+    listBackgroundColor: "#2a2a2a",
+    listColor: "#e0e0e0",
+    hoverBackgroundColor: "#3a3a3a",
+    selectedBackgroundColor: "#1a3a5c",
+    selectedColor: "#e0e0e0",
+    separatorColor: "#404040",
+    focusRingColor: "#4da6ff",
+    focusRingOffset: "#2a2a2a",
+  });
+
+  const activeTheme: DropdownTheme | undefined = useCustomTheme
+    ? customTheme
+    : presetThemes[selectedPreset]?.theme;
+
+  const hasActiveTheme = useCustomTheme || selectedPreset !== 0;
+
   return (
     <Page style={{ padding: 0, height: '100%' }}>
       <div className="demo-page">
@@ -109,8 +138,9 @@ export default function DemoPage() {
             items={items}
             renderItem={renderItem}
             onSelect={() => {}}
-            border={{ width: borderWidth, style: borderStyle, color: borderColor, radius: 5 }}
-            componentStyle={{
+            theme={hasActiveTheme ? activeTheme : undefined}
+            border={{ width: borderWidth, style: borderStyle, color: hasActiveTheme ? undefined : borderColor, radius: borderRadius }}
+            componentStyle={hasActiveTheme ? {} : {
               backgroundColor: bgColor,
               color: textColor,
               arrowColor,
@@ -118,20 +148,22 @@ export default function DemoPage() {
             }}
             placeholder={{
               text: placeholderText,
-              color: placeholderColor,
+              color: hasActiveTheme ? undefined : placeholderColor,
               fontSize: placeholderFontSize,
               fontWeight: placeholderFontWeight,
             }}
             dropdownStyle={{
               dropdownDirection: direction,
-              backgroundColor: dropBgColor,
-              color: dropTextColor,
-              hoverColor,
-              selectedColor,
-              selectedBackgroundColor: selectedBgColor,
+              ...(hasActiveTheme ? {} : {
+                backgroundColor: dropBgColor,
+                color: dropTextColor,
+                hoverColor,
+                selectedColor,
+                selectedBackgroundColor: selectedBgColor,
+                separatorColor,
+              }),
               animationDuration,
               maxDropHeight,
-              separatorColor,
               separatorThickness,
               separatorStyle,
             }}
@@ -153,6 +185,45 @@ export default function DemoPage() {
                 onChange={(e) => setPreviewBgColor(e.target.value)}
               />
             </div>
+          </details>
+
+          {/* Theme */}
+          <details className="demo-section" open>
+            <summary>Theme</summary>
+            <div className="demo-row">
+              <label>Preset</label>
+              <select
+                value={selectedPreset}
+                disabled={useCustomTheme}
+                onChange={(e) => setSelectedPreset(Number(e.target.value))}
+              >
+                {presetThemes.map((p, i) => (
+                  <option key={p.name} value={i}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="demo-row">
+              <label>Custom Override</label>
+              <input
+                type="checkbox"
+                checked={useCustomTheme}
+                onChange={(e) => setUseCustomTheme(e.target.checked)}
+              />
+            </div>
+            {useCustomTheme && (
+              <>
+                {(Object.keys(customTheme) as (keyof DropdownTheme)[]).map((key) => (
+                  <div className="demo-row" key={key}>
+                    <label>{key.replace(/([A-Z])/g, " $1").replace(/^./, (s) => s.toUpperCase()).trim()}</label>
+                    <input
+                      type="color"
+                      value={customTheme[key] || "#000000"}
+                      onChange={(e) => setCustomTheme((prev) => ({ ...prev, [key]: e.target.value }))}
+                    />
+                  </div>
+                ))}
+              </>
+            )}
           </details>
 
           {/* Placement */}
@@ -244,6 +315,17 @@ export default function DemoPage() {
                 <option value="dotted">dotted</option>
                 <option value="none">none</option>
               </select>
+            </div>
+            <div className="demo-row">
+              <label>Radius</label>
+              <input
+                type="range"
+                min={0}
+                max={30}
+                value={borderRadius}
+                onChange={(e) => setBorderRadius(Number(e.target.value))}
+              />
+              <span className="demo-range-value">{borderRadius}</span>
             </div>
           </details>
 

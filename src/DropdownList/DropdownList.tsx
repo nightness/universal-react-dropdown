@@ -24,6 +24,7 @@ interface DropdownListProps<T> {
   onScroll?: (e: UIEvent<HTMLUListElement>) => void;
   itemStyle?: React.CSSProperties;
   itemHoverColor?: string;
+  borderWidth?: number;
 }
 
 export function DropdownList<T>({
@@ -46,6 +47,7 @@ export function DropdownList<T>({
   onScroll,
   itemStyle = {},
   itemHoverColor = 'var(--urd-hover-bg)',
+  borderWidth = 0,
 }: DropdownListProps<T>) {
   const maxDropHeight = effectiveMaxHeight ?? dropdownStyle?.maxDropHeight ?? DEFAULT_MAX_DROP_HEIGHT;
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
@@ -75,6 +77,7 @@ export function DropdownList<T>({
 
   const animationDuration = dropdownStyle?.animationDuration || DEFAULT_ANIMATION_DURATION;
   const transition = `max-height ${animationDuration / 1000}s ease, opacity ${animationDuration / 1000}s ease`;
+  const direction = effectiveDirection ?? dropdownStyle?.dropdownDirection ?? 'down';
 
   const getItemStyle = (item: T | null, index: number): React.CSSProperties => {
     const isSelected = selectedItem === item;
@@ -93,10 +96,17 @@ export function DropdownList<T>({
   return (
     <ul
       ref={listRef}
-      className={`dropdown-list ${(effectiveDirection ?? dropdownStyle?.dropdownDirection) === 'up' ? 'up' : 'down'}`}
+      className="dropdown-list"
       style={{
+        left: -borderWidth,
+        right: -borderWidth,
+        ...(direction === 'down'
+          ? { top: '100%', bottom: 'auto' }
+          : { bottom: '100%', top: 'auto' }),
         border: borderStyle,
-        borderTop: 'none',
+        ...(direction === 'down'
+          ? { borderTop: 'none' }
+          : { borderBottom: 'none' }),
         maxHeight: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? maxDropHeight : 0,
         opacity: visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening ? 1 : 0,
         backgroundColor: dropdownStyle?.backgroundColor || 'var(--urd-list-bg)',

@@ -1,6 +1,6 @@
 .innerContainer {
   display: flex;
-  height: calc(100% - 50px);
+  height: 100%;
   margin: 0;
   padding: 0;
   flex-direction: column;

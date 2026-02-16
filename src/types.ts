@@ -81,6 +81,23 @@ export interface DropdownStyle extends CommonStyle {
   separatorStyle?: 'solid' | 'dotted' | 'dashed';
 }
 
+export interface DropdownTheme {
+  backgroundColor?: string;        // --urd-bg
+  color?: string;                  // --urd-color
+  borderColor?: string;            // --urd-border-color
+  arrowColor?: string;             // --urd-arrow-color
+  arrowBorderColor?: string;       // --urd-arrow-border-color
+  placeholderColor?: string;       // --urd-placeholder-color
+  listBackgroundColor?: string;    // --urd-list-bg
+  listColor?: string;              // --urd-list-color
+  hoverBackgroundColor?: string;   // --urd-hover-bg
+  selectedBackgroundColor?: string; // --urd-selected-bg
+  selectedColor?: string;          // --urd-selected-color
+  separatorColor?: string;         // --urd-separator-color
+  focusRingColor?: string;         // --urd-focus-ring-color
+  focusRingOffset?: string;        // --urd-focus-ring-offset
+}
+
 export interface Size {
   width: number;
   height: number;

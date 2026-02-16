@@ -2,8 +2,8 @@ import React from 'react';
 import { DEFAULT_ANIMATION_DURATION, DEFAULT_DROPDOWN_BORDER, DEFAULT_PADDING } from '../constants';
 import { DefaultArrow } from '../DefaultArrow/DefaultArrow';
 import { DropdownList } from '../DropdownList/DropdownList';
-import { toScrollData } from '../helpers';
-import { Border, ComponentStyle, DropdownStyle, ArrowComponentProps, Placeholder } from '../types';
+import { themeToCustomProperties, toBorder, toScrollData } from '../helpers';
+import { Border, ComponentStyle, DropdownStyle, DropdownTheme, ArrowComponentProps, Placeholder } from '../types';
 import { useDropdownList } from '../DropdownList/useDropdownList';
 import { DropdownHeaderStyleResult, DropdownStyleResult, getStyles } from '../useStyles';
 
@@ -20,6 +20,7 @@ interface DropdownProps<T> {
   placeholder?: Placeholder;
   componentStyle?: ComponentStyle;
   dropdownStyle?: DropdownStyle;
+  theme?: DropdownTheme;
   disabled?: boolean;
   allowNoSelection?: boolean;
 }
@@ -34,10 +35,12 @@ export function Dropdown<T>({
   placeholder,
   componentStyle,
   dropdownStyle,
+  theme,
   border = DEFAULT_DROPDOWN_BORDER,
   disabled = false,
   allowNoSelection = false,
 }: DropdownProps<T>) {
+  const themeVars = themeToCustomProperties(theme);
   const {
     visibility,
     selectedIndex,
@@ -93,8 +96,25 @@ export function Dropdown<T>({
 
   const itemHoverColor = dropdownStyle?.hoverColor || 'var(--urd-hover-bg)';
 
+  const isOpen = visibility === 'Opening' || visibility === 'Open';
+  const direction = effectiveDirection ?? dropdownStyle?.dropdownDirection ?? 'down';
+  const borderWidth = toBorder(border).width;
+  const r = dropdownStyles.borderRadius;
+  const containerRadius = isOpen
+    ? direction === 'down'
+      ? `${r} ${r} 0 0`
+      : `0 0 ${r} ${r}`
+    : r;
+
   return (
-    <div className="dropdown" ref={dropdownRef} style={{ ...dropDownStyle, border: borderStyle, borderRadius: dropdownStyles.borderRadius }}>
+    <div className="dropdown" ref={dropdownRef} style={{
+      ...themeVars,
+      ...dropDownStyle,
+      border: borderStyle,
+      borderRadius: containerRadius,
+      ...(isOpen && direction === 'down' ? { borderBottom: 'none' } : {}),
+      ...(isOpen && direction === 'up' ? { borderTop: 'none' } : {}),
+    }}>
       <div
         className="dropdown-header"
         tabIndex={disabled ? -1 : 0}
@@ -143,6 +163,7 @@ export function Dropdown<T>({
         scrollData={scrollData}
         itemStyle={itemStyle}
         itemHoverColor={itemHoverColor}
+        borderWidth={borderWidth}
         onScroll={(e) => scrollData.current = toScrollData(e.nativeEvent.target)}
       />
     </div>
