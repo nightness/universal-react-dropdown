@@ -36,3 +36,5 @@ pnpm-lock.yaml
 
 # Personal Notes
 TODO.md
+
+.fastembed_cache
