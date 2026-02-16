@@ -6,6 +6,7 @@ import path from "path";
 export default defineConfig({
   base: '/universal-react-dropdown/',
   resolve: {
+    dedupe: ['react', 'react-dom'],
     alias: {
       "universal-react-dropdown": path.resolve(__dirname, "../src"),
       "@components": path.resolve(__dirname, "src/components"),
