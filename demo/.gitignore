@@ -25,11 +25,7 @@ dist-ssr
 *.sw?
 
 # Package files
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 
 .vscode
-
-# Firebase
-.firebase
