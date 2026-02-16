@@ -2,6 +2,8 @@
 
 universal-react-dropdown is a customizable React Dropdown component designed for flexible integration into React applications. This component allows for easy customization of styles and behavior, making it suitable for various use cases.
 
+**[Live Demo](https://nightness.github.io/universal-react-dropdown/)**
+
 ## Key Features
 
 - **React 18 & 19 Compatibility**: Works with React 18.x and React 19.x, ensuring seamless integration with your existing React project.
