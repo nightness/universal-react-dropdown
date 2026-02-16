@@ -13,8 +13,8 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Button = forwardRef(function (
   { className, text, onLongPress, type, ...restProps }: Props,
   ref: React.LegacyRef<HTMLButtonElement>
-): JSX.Element {
-  const touchDownTimer = useRef<NodeJS.Timeout>();
+): React.JSX.Element {
+  const touchDownTimer = useRef<NodeJS.Timeout>(undefined);
 
   const clearLongPressTimer = useCallback(() => {
     if (touchDownTimer.current) {

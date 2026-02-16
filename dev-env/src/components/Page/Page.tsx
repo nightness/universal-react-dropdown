@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 import "./Page.css";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  children: JSX.Element | JSX.Element[];  
+  children: React.JSX.Element | React.JSX.Element[];
   style?: CSSProperties;
   pageScroll?: boolean;
 }

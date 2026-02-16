@@ -117,7 +117,7 @@ export function DropdownList<T>({
       {items.map((item, index) => (
         <li
           key={index}
-          ref={(el) => (itemRefs.current && (itemRefs.current[index] = el))}
+          ref={(el) => { if (itemRefs.current) itemRefs.current[index] = el; }}
           onClick={() => !disabled && onItemClick(item, index)}
           onMouseEnter={() => setHoveredIndex(index)}
           onMouseLeave={() => setHoveredIndex(null)}

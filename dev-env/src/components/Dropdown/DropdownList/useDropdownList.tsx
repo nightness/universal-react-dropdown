@@ -30,7 +30,7 @@ export function useDropdownList<T>({
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]) as React.MutableRefObject<(HTMLLIElement | null)[]>;
   const dropdownRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
   const listRef = useRef<HTMLUListElement>(null) as React.RefObject<HTMLUListElement>;
-  const animationTimeout = useRef<NodeJS.Timeout>();
+  const animationTimeout = useRef<NodeJS.Timeout>(undefined);
   const closeDropdownRef = useRef<(callback?: () => void) => void>(() => {});
 
   const computeEffectiveLayout = useCallback(() => {
