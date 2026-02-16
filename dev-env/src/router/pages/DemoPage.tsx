@@ -19,7 +19,44 @@ const renderItem = (item: Item | null, _index: number, isSelected: boolean) => (
   </div>
 );
 
+type HAlign = "left" | "center" | "right";
+type VAlign = "top" | "center" | "bottom";
+
+const placements: { label: string; h: HAlign; v: VAlign }[] = [
+  { label: "Top Left", h: "left", v: "top" },
+  { label: "Top Center", h: "center", v: "top" },
+  { label: "Top Right", h: "right", v: "top" },
+  { label: "Mid Left", h: "left", v: "center" },
+  { label: "Center", h: "center", v: "center" },
+  { label: "Mid Right", h: "right", v: "center" },
+  { label: "Bot Left", h: "left", v: "bottom" },
+  { label: "Bot Center", h: "center", v: "bottom" },
+  { label: "Bot Right", h: "right", v: "bottom" },
+];
+
+function getPlacementStyle(h: HAlign, v: VAlign): React.CSSProperties {
+  const style: React.CSSProperties = {};
+  switch (h) {
+    case "left": style.left = "0"; break;
+    case "center": style.left = "50%"; style.transform = "translateX(-50%)"; break;
+    case "right": style.right = "0"; break;
+  }
+  switch (v) {
+    case "top": style.top = "0"; break;
+    case "center":
+      style.top = "50%";
+      style.transform = (style.transform || "") + " translateY(-50%)";
+      break;
+    case "bottom": style.bottom = "0"; break;
+  }
+  return style;
+}
+
 export default function DemoPage() {
+  // Placement
+  const [hAlign, setHAlign] = useState<HAlign>("center");
+  const [vAlign, setVAlign] = useState<VAlign>("center");
+
   // General
   const [width, setWidth] = useState<number | undefined>(undefined);
   const [padding, setPadding] = useState(5);
@@ -57,10 +94,11 @@ export default function DemoPage() {
   const [separatorStyle, setSeparatorStyle] = useState<"solid" | "dotted" | "dashed">("dotted");
 
   return (
-    <Page style={{ padding: 0 }}>
+    <Page style={{ padding: 0, height: '100%' }}>
       <div className="demo-page">
         <div className="demo-preview">
-          <Dropdown
+          <div className="demo-preview-inner" style={getPlacementStyle(hAlign, vAlign)}>
+            <Dropdown
             width={width}
             padding={padding}
             disabled={disabled}
@@ -95,10 +133,27 @@ export default function DemoPage() {
               separatorStyle,
             }}
           />
+          </div>
         </div>
 
         <div className="demo-controls">
           <h2>Controls</h2>
+
+          {/* Placement */}
+          <details className="demo-section" open>
+            <summary>Placement</summary>
+            <div className="demo-placement-grid">
+              {placements.map((p) => (
+                <button
+                  key={p.label}
+                  className={`demo-placement-btn${hAlign === p.h && vAlign === p.v ? " active" : ""}`}
+                  onClick={() => { setHAlign(p.h); setVAlign(p.v); }}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </details>
 
           {/* General */}
           <details className="demo-section" open>

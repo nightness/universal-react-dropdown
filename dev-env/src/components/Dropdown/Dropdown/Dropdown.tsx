@@ -42,6 +42,8 @@ export function Dropdown<T>({
     visibility,
     selectedIndex,
     selectedItem,
+    effectiveMaxHeight,
+    effectiveDirection,
     scrollData,
     itemRefs,
     dropdownRef,
@@ -55,6 +57,7 @@ export function Dropdown<T>({
     disabled,
     animationDuration: dropdownStyle?.animationDuration,
     maxDropHeight: dropdownStyle?.maxDropHeight,
+    dropdownDirection: dropdownStyle?.dropdownDirection,
     items,
     onSelect,
   });
@@ -130,6 +133,8 @@ export function Dropdown<T>({
         onItemClick={onItemClick}
         visibility={visibility}
         dropdownStyle={dropdownStyle}
+        effectiveMaxHeight={effectiveMaxHeight}
+        effectiveDirection={effectiveDirection}
         padding={padding}
         borderStyle={borderStyle}
         listRef={listRef}

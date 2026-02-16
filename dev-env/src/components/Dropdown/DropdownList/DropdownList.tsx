@@ -12,6 +12,8 @@ interface DropdownListProps<T> {
   onItemClick: (item: T | null, index: number) => void;
   visibility: DropdownVisibilityType;
   dropdownStyle?: DropdownStyle;
+  effectiveMaxHeight?: number;
+  effectiveDirection?: 'up' | 'down';
   padding?: number;
   borderStyle?: string;
   listRef: RefObject<HTMLUListElement>;
@@ -32,6 +34,8 @@ export function DropdownList<T>({
   onItemClick,
   visibility,
   dropdownStyle,
+  effectiveMaxHeight,
+  effectiveDirection,
   padding = 0,
   borderStyle = 'none',
   listRef,
@@ -43,7 +47,7 @@ export function DropdownList<T>({
   itemStyle = {},
   itemHoverColor = 'transparent',
 }: DropdownListProps<T>) {
-  const maxDropHeight = dropdownStyle?.maxDropHeight || DEFAULT_MAX_DROP_HEIGHT;
+  const maxDropHeight = effectiveMaxHeight ?? dropdownStyle?.maxDropHeight ?? DEFAULT_MAX_DROP_HEIGHT;
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -89,7 +93,7 @@ export function DropdownList<T>({
   return (
     <ul
       ref={listRef}
-      className={`dropdown-list ${dropdownStyle?.dropdownDirection === 'up' ? 'up' : 'down'}`}
+      className={`dropdown-list ${(effectiveDirection ?? dropdownStyle?.dropdownDirection) === 'up' ? 'up' : 'down'}`}
       style={{
         border: borderStyle,
         borderTop: 'none',

@@ -9,6 +9,7 @@ interface UseDropdownProps<T> {
   animationDuration?: number;
   disabled?: boolean;
   allowNoSelection?: boolean;
+  dropdownDirection?: 'up' | 'down';
 }
 
 export function useDropdownList<T>({
@@ -18,10 +19,13 @@ export function useDropdownList<T>({
   animationDuration = DEFAULT_ANIMATION_DURATION,
   disabled = false,
   allowNoSelection = false,
+  dropdownDirection = 'down',
 }: UseDropdownProps<T>) {
   const [visibility, setVisibility] = useState<DropdownVisibilityType>(DropdownVisibility.Closed);
   const [selectedIndex, setSelectedIndex] = useState<number>(-1);
   const [selectedItem, setSelectedItem] = useState<T | null>(null);
+  const [effectiveMaxHeight, setEffectiveMaxHeight] = useState(maxDropHeight);
+  const [effectiveDirection, setEffectiveDirection] = useState(dropdownDirection);
   const scrollData = useRef<ScrollData | null>(null) as React.MutableRefObject<ScrollData | null>;
   const itemRefs = useRef<(HTMLLIElement | null)[]>([]) as React.MutableRefObject<(HTMLLIElement | null)[]>;
   const dropdownRef = useRef<HTMLDivElement>(null) as React.RefObject<HTMLDivElement>;
@@ -29,9 +33,45 @@ export function useDropdownList<T>({
   const animationTimeout = useRef<NodeJS.Timeout>();
   const closeDropdownRef = useRef<(callback?: () => void) => void>(() => {});
 
-  const ensureVisible = () => {
+  const computeEffectiveLayout = useCallback(() => {
+    if (!dropdownRef.current) return { maxHeight: maxDropHeight, direction: dropdownDirection };
+    const rect = dropdownRef.current.getBoundingClientRect();
+    const margin = 8;
+    const spaceBelow = window.innerHeight - rect.bottom - margin;
+    const spaceAbove = rect.top - margin;
+
+    // Auto-flip when the preferred direction can't fit the dropdown and the other side has more room
+    let direction = dropdownDirection;
+    const preferredSpace = dropdownDirection === 'down' ? spaceBelow : spaceAbove;
+    const alternateSpace = dropdownDirection === 'down' ? spaceAbove : spaceBelow;
+    if (preferredSpace < maxDropHeight && alternateSpace > preferredSpace) {
+      direction = dropdownDirection === 'down' ? 'up' : 'down';
+    }
+
+    const available = direction === 'up' ? spaceAbove : spaceBelow;
+    return {
+      maxHeight: Math.max(50, Math.min(maxDropHeight, available)),
+      direction,
+    };
+  }, [maxDropHeight, dropdownDirection]);
+
+  // Recompute layout when props change while open; only reset when fully closed
+  useEffect(() => {
+    const isOpen = visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening;
+    if (isOpen) {
+      const layout = computeEffectiveLayout();
+      setEffectiveMaxHeight(layout.maxHeight);
+      setEffectiveDirection(layout.direction);
+    } else if (visibility === DropdownVisibility.Closed) {
+      setEffectiveMaxHeight(maxDropHeight);
+      setEffectiveDirection(dropdownDirection);
+    }
+  }, [maxDropHeight, dropdownDirection, visibility, computeEffectiveLayout]);
+
+  const ensureVisible = (height?: number) => {
     if (selectedIndex < 0 || !listRef.current || !itemRefs.current[selectedIndex]) return;
 
+    const mh = height ?? effectiveMaxHeight;
     const { client, scroll } = scrollData.current || {};
 
     // Safe numbers
@@ -47,7 +87,7 @@ export function useDropdownList<T>({
 
     // Move the selected item to the top of the dropdown list
     listRef.current.scrollTo({
-      top: selectedItemPosition - (Math.floor(maxDropHeight || 0)) / 2 + selectedItemHeight / 2,
+      top: selectedItemPosition - (Math.floor(mh || 0)) / 2 + selectedItemHeight / 2,
       behavior: 'smooth',
     })
   }
@@ -69,7 +109,10 @@ export function useDropdownList<T>({
   // Start the opening dropdown animation
   const openDropdown = () => {
     if (visibility === DropdownVisibility.Open || visibility === DropdownVisibility.Opening || disabled) return;
-    ensureVisible();
+    const layout = computeEffectiveLayout();
+    setEffectiveMaxHeight(layout.maxHeight);
+    setEffectiveDirection(layout.direction);
+    ensureVisible(layout.maxHeight);
     setVisibility(DropdownVisibility.Opening);
     if (animationTimeout.current) clearTimeout(animationTimeout.current);
     animationTimeout.current = setTimeout(() => {
@@ -201,6 +244,8 @@ export function useDropdownList<T>({
     visibility,
     selectedIndex,
     selectedItem,
+    effectiveMaxHeight,
+    effectiveDirection,
     toggleDropdown,
     onItemClick,
     dropdownRef,
