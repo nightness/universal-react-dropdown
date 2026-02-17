@@ -119,12 +119,17 @@ export function Dropdown<T>({
 
   const autoSize = width === 'auto';
   const arrowPad = !renderTrigger ? DEFAULT_ARROW_WIDTH + padding : 0;
+  const borderWidth = toBorder(border).width;
+  const r = dropdownStyles.borderRadius;
+  const innerRNum = Math.max(0, parseFloat(r) - borderWidth);
+  const radiusPad = Math.min(3, Math.ceil(innerRNum * 0.25));
 
   const sizerContent = useMemo(() => {
     if (!autoSize) return null;
+    const hPad = padding + radiusPad;
     const sizerItemStyle: React.CSSProperties = {
-      padding: `${padding}px`,
-      paddingRight: `${padding + arrowPad}px`,
+      padding: `${padding}px ${hPad}px`,
+      paddingRight: `${hPad + arrowPad}px`,
       whiteSpace: 'nowrap',
     };
     const sizerPlaceholderStyle: React.CSSProperties = {
@@ -146,17 +151,21 @@ export function Dropdown<T>({
         )}
       </div>
     );
-  }, [autoSize, items, renderItem, padding, arrowPad, allowNoSelection, placeholder]);
+  }, [autoSize, items, renderItem, padding, radiusPad, arrowPad, allowNoSelection, placeholder]);
 
   const isOpen = visibility === 'Opening' || visibility === 'Open';
   const direction = effectiveDirection ?? dropdownStyle?.dropdownDirection ?? 'down';
-  const borderWidth = toBorder(border).width;
-  const r = dropdownStyles.borderRadius;
   const containerRadius = isOpen
     ? direction === 'down'
       ? `${r} ${r} 0 0`
       : `0 0 ${r} ${r}`
     : r;
+  const innerR = `${innerRNum}px`;
+  const headerRadius = isOpen
+    ? direction === 'down'
+      ? `${innerR} ${innerR} 0 0`
+      : `0 0 ${innerR} ${innerR}`
+    : innerR;
 
   return (
     <div className="dropdown" ref={dropdownRef} style={{
@@ -185,7 +194,8 @@ export function Dropdown<T>({
         onKeyDown={onKeyDown}
         style={{
           ...headerStyle,
-          padding,
+          padding: `${padding}px ${padding + radiusPad}px`,
+          borderRadius: headerRadius,
         }}
         onWheel={onWheel}
       >
